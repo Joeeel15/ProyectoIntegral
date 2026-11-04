@@ -1,0 +1,19 @@
+.navbar {
+  min-height: 65px;
+}
+
+.navbar-brand {
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+.nav-link {
+  font-weight: 500;
+  margin-left: 12px;
+}
+
+.nav-link.active {
+  color: #ffffff;
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
