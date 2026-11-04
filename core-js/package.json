@@ -1,0 +1,10 @@
+
+{
+  "name": "core-js",
+  "version": "1.0.0",
+  "description": "Nucleo JavaScript de CampusHub",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
