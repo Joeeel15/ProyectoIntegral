@@ -4,9 +4,19 @@
 // ==========================================
 
 // 1. Validar correo institucional UTP
-export const esCorreoUTP = (correo) => {
-    const regex = /^[a-z0-9._%+-]+@utp\.edu\.pe$/i;
-    return regex.test(correo);
+export const esCorreoUTP = (correo, codigo) => {
+    const regex = /^U\d{8}@utp\.edu\.pe$/;
+
+    if (!regex.test(correo)) {
+        return false;
+    }
+
+    // Si se proporciona el código, debe coincidir con el correo.
+    if (codigo !== undefined) {
+        return correo === `${codigo}@utp.edu.pe`;
+    }
+
+    return true;
 };
 
 // 2. Validar código de alumno: U + 8 dígitos
@@ -44,9 +54,9 @@ export const esFecha = (fecha) => {
 // MENSAJES DE ERROR CON TEMPLATE LITERALS
 // ==========================================
 
-export const validarCorreoUTP = (correo) => {
-    if (!esCorreoUTP(correo)) {
-        return `El correo "${correo}" no es válido. Debe pertenecer al dominio @utp.edu.pe.`;
+export const validarCorreoUTP = (correo, codigo) => {
+    if (!esCorreoUTP(correo, codigo)) {
+        return `El correo "${correo}" no es válido. Debe tener el formato U########@utp.edu.pe y coincidir con el código del estudiante.`;
     }
 
     return null;

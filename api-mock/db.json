@@ -1,0 +1,405 @@
+{
+  "administradores": [
+    {
+      "id": 1,
+      "nombre": "Carlos Mendoza",
+      "correo": "carlos.mendoza@utp.edu.pe",
+      "codigo": "U00000001",
+      "rol": "admin",
+      "password": "Admin123"
+    },
+    {
+      "id": 2,
+      "nombre": "Mariana Torres",
+      "correo": "mariana.torres@utp.edu.pe",
+      "codigo": "U00000002",
+      "rol": "admin",
+      "password": "Admin456"
+    }
+  ],
+
+  "estudiantes": [
+    {
+      "id": 1,
+      "nombre": "Cristian Astorayme",
+      "correo": "U24230597@utp.edu.pe",
+      "codigo": "U24230597",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Este"
+    },
+    {
+      "id": 2,
+      "nombre": "Lucia Fernandez",
+      "correo": "U20230002@utp.edu.pe",
+      "codigo": "U20230002",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Norte"
+    },
+    {
+      "id": 3,
+      "nombre": "Diego Castillo",
+      "correo": "U20230003@utp.edu.pe",
+      "codigo": "U20230003",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Centro"
+    },
+    {
+      "id": 4,
+      "nombre": "Valeria Flores",
+      "correo": "U20230004@utp.edu.pe",
+      "codigo": "U20230004",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Sur"
+    },
+    {
+      "id": 5,
+      "nombre": "Mateo Rojas",
+      "correo": "U20230005@utp.edu.pe",
+      "codigo": "U20230005",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Norte"
+    },
+    {
+      "id": 6,
+      "nombre": "Camila Vega",
+      "correo": "U20230006@utp.edu.pe",
+      "codigo": "U20230006",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Este"
+    }
+  ],
+  "laboratorios": [
+    {
+      "id": 1,
+      "nombre": "Laboratorio de Computo 101",
+      "sede": "Lima Centro",
+      "piso": 1,
+      "capacidad": 30,
+      "equipos": ["30 computadoras", "Proyector", "Pizarra"],
+      "estado": "disponible",
+      "descripcion": "Laboratorio para clases de programacion y computacion."
+    },
+    {
+      "id": 2,
+      "nombre": "Laboratorio de Redes 201",
+      "sede": "Lima Centro",
+      "piso": 2,
+      "capacidad": 25,
+      "equipos": ["25 computadoras", "Switches", "Routers", "Proyector"],
+      "estado": "disponible",
+      "descripcion": "Espacio equipado para practicas de redes y telecomunicaciones."
+    },
+    {
+      "id": 3,
+      "nombre": "Laboratorio de Innovacion 301",
+      "sede": "Lima Centro",
+      "piso": 3,
+      "capacidad": 20,
+      "equipos": ["20 computadoras", "Impresora 3D", "Proyector"],
+      "estado": "disponible",
+      "descripcion": "Laboratorio destinado a proyectos de innovacion tecnologica."
+    },
+    {
+      "id": 4,
+      "nombre": "Laboratorio de Computo 102",
+      "sede": "Lima Norte",
+      "piso": 1,
+      "capacidad": 35,
+      "equipos": ["35 computadoras", "Proyector", "Pizarra"],
+      "estado": "disponible",
+      "descripcion": "Laboratorio para cursos de desarrollo de software."
+    },
+    {
+      "id": 5,
+      "nombre": "Laboratorio de Electronica 202",
+      "sede": "Lima Norte",
+      "piso": 2,
+      "capacidad": 20,
+      "equipos": [
+        "20 estaciones de trabajo",
+        "Multimetros",
+        "Fuentes de poder"
+      ],
+      "estado": "mantenimiento",
+      "descripcion": "Laboratorio especializado en practicas de electronica."
+    },
+    {
+      "id": 6,
+      "nombre": "Laboratorio de Computo 103",
+      "sede": "Lima Sur",
+      "piso": 1,
+      "capacidad": 30,
+      "equipos": ["30 computadoras", "Proyector", "Pizarra"],
+      "estado": "disponible",
+      "descripcion": "Espacio para practicas academicas y desarrollo de proyectos."
+    },
+    {
+      "id": 7,
+      "nombre": "Laboratorio Multimedia 203",
+      "sede": "Lima Este",
+      "piso": 2,
+      "capacidad": 25,
+      "equipos": ["25 computadoras", "Camaras", "Microfonos", "Proyector"],
+      "estado": "disponible",
+      "descripcion": "Laboratorio para edicion multimedia y produccion digital."
+    },
+    {
+      "id": 8,
+      "nombre": "Laboratorio de Sistemas 302",
+      "sede": "Lima Este",
+      "piso": 3,
+      "capacidad": 28,
+      "equipos": ["28 computadoras", "Proyector", "Pizarra digital"],
+      "estado": "disponible",
+      "descripcion": "Laboratorio para cursos de sistemas e informatica."
+    }
+  ],
+  "reservas": [
+    {
+      "id": 1,
+      "codigo": "RES-0001",
+      "usuarioId": 1,
+      "laboratorioId": 1,
+      "fecha": "2026-11-05",
+      "horaInicio": "08:00",
+      "horaFin": "10:00",
+      "motivo": "Practica de JavaScript",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-01T09:00:00"
+    },
+    {
+      "id": 2,
+      "codigo": "RES-0002",
+      "usuarioId": 2,
+      "laboratorioId": 1,
+      "fecha": "2026-11-05",
+      "horaInicio": "10:00",
+      "horaFin": "12:00",
+      "motivo": "Practica de bases de datos",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-01T09:30:00"
+    },
+    {
+      "id": 3,
+      "codigo": "RES-0003",
+      "usuarioId": 3,
+      "laboratorioId": 2,
+      "fecha": "2026-11-05",
+      "horaInicio": "08:00",
+      "horaFin": "11:00",
+      "motivo": "Configuracion de redes",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-01T10:00:00"
+    },
+    {
+      "id": 4,
+      "codigo": "RES-0004",
+      "usuarioId": 4,
+      "laboratorioId": 3,
+      "fecha": "2026-11-06",
+      "horaInicio": "09:00",
+      "horaFin": "11:00",
+      "motivo": "Proyecto de innovacion",
+      "estado": "rechazada",
+      "creadoEn": "2026-11-01T10:30:00"
+    },
+    {
+      "id": 5,
+      "codigo": "RES-0005",
+      "usuarioId": 5,
+      "laboratorioId": 4,
+      "fecha": "2026-11-06",
+      "horaInicio": "08:00",
+      "horaFin": "10:00",
+      "motivo": "Desarrollo de aplicacion web",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-01T11:00:00"
+    },
+    {
+      "id": 6,
+      "codigo": "RES-0006",
+      "usuarioId": 6,
+      "laboratorioId": 6,
+      "fecha": "2026-11-06",
+      "horaInicio": "10:00",
+      "horaFin": "12:00",
+      "motivo": "Practica de algoritmos",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-01T11:30:00"
+    },
+    {
+      "id": 7,
+      "codigo": "RES-0007",
+      "usuarioId": 1,
+      "laboratorioId": 7,
+      "fecha": "2026-11-07",
+      "horaInicio": "09:00",
+      "horaFin": "11:00",
+      "motivo": "Edicion de video",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-01T12:00:00"
+    },
+    {
+      "id": 8,
+      "codigo": "RES-0008",
+      "usuarioId": 2,
+      "laboratorioId": 8,
+      "fecha": "2026-11-07",
+      "horaInicio": "11:00",
+      "horaFin": "13:00",
+      "motivo": "Trabajo de ingenieria de sistemas",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-01T12:30:00"
+    },
+    {
+      "id": 9,
+      "codigo": "RES-0009",
+      "usuarioId": 3,
+      "laboratorioId": 1,
+      "fecha": "2026-11-08",
+      "horaInicio": "08:00",
+      "horaFin": "10:00",
+      "motivo": "Practica de desarrollo frontend",
+      "estado": "rechazada",
+      "creadoEn": "2026-11-02T09:00:00"
+    },
+    {
+      "id": 10,
+      "codigo": "RES-0010",
+      "usuarioId": 4,
+      "laboratorioId": 2,
+      "fecha": "2026-11-08",
+      "horaInicio": "13:00",
+      "horaFin": "15:00",
+      "motivo": "Practica de seguridad informatica",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-02T09:30:00"
+    },
+    {
+      "id": 11,
+      "codigo": "RES-0011",
+      "usuarioId": 5,
+      "laboratorioId": 3,
+      "fecha": "2026-11-09",
+      "horaInicio": "08:00",
+      "horaFin": "10:00",
+      "motivo": "Desarrollo de prototipo",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-02T10:00:00"
+    },
+    {
+      "id": 12,
+      "codigo": "RES-0012",
+      "usuarioId": 6,
+      "laboratorioId": 4,
+      "fecha": "2026-11-09",
+      "horaInicio": "10:00",
+      "horaFin": "12:00",
+      "motivo": "Practica de programacion",
+      "estado": "rechazada",
+      "creadoEn": "2026-11-02T10:30:00"
+    },
+    {
+      "id": 13,
+      "codigo": "RES-0013",
+      "usuarioId": 1,
+      "laboratorioId": 6,
+      "fecha": "2026-11-10",
+      "horaInicio": "08:00",
+      "horaFin": "11:00",
+      "motivo": "Desarrollo de proyecto academico",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-02T11:00:00"
+    },
+    {
+      "id": 14,
+      "codigo": "RES-0014",
+      "usuarioId": 2,
+      "laboratorioId": 7,
+      "fecha": "2026-11-10",
+      "horaInicio": "13:00",
+      "horaFin": "15:00",
+      "motivo": "Grabacion de contenido multimedia",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-02T11:30:00"
+    },
+    {
+      "id": 15,
+      "codigo": "RES-0015",
+      "usuarioId": 3,
+      "laboratorioId": 8,
+      "fecha": "2026-11-11",
+      "horaInicio": "08:00",
+      "horaFin": "10:00",
+      "motivo": "Practica de arquitectura de software",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-02T12:00:00"
+    },
+    {
+      "id": 16,
+      "codigo": "RES-0016",
+      "usuarioId": 4,
+      "laboratorioId": 1,
+      "fecha": "2026-11-11",
+      "horaInicio": "14:00",
+      "horaFin": "16:00",
+      "motivo": "Practica de estructuras de datos",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-02T12:30:00"
+    },
+    {
+      "id": 17,
+      "codigo": "RES-0017",
+      "usuarioId": 5,
+      "laboratorioId": 2,
+      "fecha": "2026-11-12",
+      "horaInicio": "08:00",
+      "horaFin": "10:00",
+      "motivo": "Configuracion de equipos de red",
+      "estado": "rechazada",
+      "creadoEn": "2026-11-03T09:00:00"
+    },
+    {
+      "id": 18,
+      "codigo": "RES-0018",
+      "usuarioId": 6,
+      "laboratorioId": 3,
+      "fecha": "2026-11-12",
+      "horaInicio": "10:00",
+      "horaFin": "12:00",
+      "motivo": "Investigacion tecnologica",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-03T09:30:00"
+    },
+    {
+      "id": 19,
+      "codigo": "RES-0019",
+      "usuarioId": 1,
+      "laboratorioId": 4,
+      "fecha": "2026-11-13",
+      "horaInicio": "13:00",
+      "horaFin": "15:00",
+      "motivo": "Practica de Java",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-03T10:00:00"
+    },
+    {
+      "id": 20,
+      "codigo": "RES-0020",
+      "usuarioId": 2,
+      "laboratorioId": 6,
+      "fecha": "2026-11-13",
+      "horaInicio": "08:00",
+      "horaFin": "10:00",
+      "motivo": "Practica de desarrollo de software",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-03T10:30:00"
+    }
+  ]
+}

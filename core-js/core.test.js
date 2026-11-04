@@ -31,12 +31,16 @@ import {
 // PRUEBAS DE VALIDADORES
 // ==========================================
 
-test("1. Debe aceptar un correo institucional UTP", () => {
-    assert.equal(esCorreoUTP("alumno@utp.edu.pe"), true);
+test("1. Debe aceptar el correo institucional que coincide con el codigo", () => {
+    assert.equal(
+        esCorreoUTP("U12345678@utp.edu.pe", "U12345678"),
+        true
+    );
 });
 
-test("2. Debe rechazar un correo que no sea UTP", () => {
-    assert.equal(esCorreoUTP("alumno@gmail.com"), false);
+test("2. Debe rechazar correos que no tengan el formato institucional", () => {
+    assert.equal(esCorreoUTP("alumno@gmail.com", "U12345678"), false);
+    assert.equal(esCorreoUTP("alumno@utp.edu.pe", "U12345678"), false);
 });
 
 test("3. Debe aceptar un código de alumno válido", () => {
@@ -47,20 +51,30 @@ test("4. Debe rechazar un código de alumno inválido", () => {
     assert.equal(esCodigoAlumno("A20231234"), false);
 });
 
-test("5. Debe validar correctamente las horas", () => {
+test("5. Debe rechazar un correo que no coincida con el codigo del estudiante", () => {
+    assert.equal(
+        esCorreoUTP("U87654321@utp.edu.pe", "U12345678"),
+        false
+    );
+});
+
+test("6. Debe validar correctamente las horas", () => {
     assert.equal(esHora("08:30"), true);
     assert.equal(esHora("25:70"), false);
 });
 
-test("6. Debe validar fechas reales en formato AAAA-MM-DD", () => {
+test("7. Debe validar fechas reales en formato AAAA-MM-DD", () => {
     assert.equal(esFecha("2026-11-20"), true);
     assert.equal(esFecha("2026-02-30"), false);
 });
 
-test("7. Debe generar un mensaje de error con el correo inválido", () => {
-    const mensaje = validarCorreoUTP("alumno@gmail.com");
+test("8. Debe generar un mensaje de error para un correo incorrecto", () => {
+    const mensaje = validarCorreoUTP(
+        "alumno@gmail.com",
+        "U12345678"
+    );
 
-    assert.match(mensaje, /alumno@gmail.com/);
+    assert.ok(mensaje.includes("no es válido"));
 });
 
 // ==========================================
