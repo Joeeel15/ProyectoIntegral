@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 
 import { ListaLaboratorios } from './components/laboratorios/lista-laboratorios/lista-laboratorios';
@@ -8,39 +7,35 @@ import { ListaReservas } from './components/reservas/lista-reservas/lista-reserv
 import { Dashboard } from './components/dashboard/dashboard';
 
 export const routes: Routes = [
-
-  { path: '',
-    component: Dashboard 
-  },
+  { path: '', component: Dashboard },
 
   {
     path: 'laboratorios',
-    component: ListaLaboratorios
+    component: ListaLaboratorios,
   },
 
   {
     path: 'laboratorios/nuevo',
-    component: FormularioLaboratorio
+    component: FormularioLaboratorio,
   },
 
   {
     path: 'laboratorios/:id/editar',
-    component: FormularioLaboratorio
+    component: FormularioLaboratorio,
   },
 
   {
     path: 'laboratorios/:id',
-    component: DetalleLaboratorio
+    component: DetalleLaboratorio,
   },
 
   {
     path: 'reservas',
-    component: ListaReservas
+    component: ListaReservas,
   },
 
   {
     path: '**',
-    redirectTo: 'laboratorios'
-  }
-
+    redirectTo: 'laboratorios',
+  },
 ];
