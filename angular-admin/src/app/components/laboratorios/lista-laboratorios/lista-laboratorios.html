@@ -117,7 +117,7 @@
 
           @for (laboratorio of laboratorios; track laboratorio.id) {
 
-            <tr>
+            <tr [appResaltarMantenimiento]="laboratorio.estado">
 
               <td>{{ laboratorio.id }}</td>
 

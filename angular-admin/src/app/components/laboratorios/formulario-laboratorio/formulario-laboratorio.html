@@ -1,1 +1,221 @@
-<p>formulario-laboratorio works!</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">
+      {{ modoEdicion ? 'Editar laboratorio' : 'Nuevo laboratorio' }}
+    </h2>
+    <p class="text-muted mb-0">
+      {{ modoEdicion
+        ? 'Modifica la información del laboratorio.'
+        : 'Registra un nuevo laboratorio en CampusHub.' }}
+    </p>
+  </div>
+
+  <a routerLink="/laboratorios" class="btn btn-outline-secondary">
+    Volver
+  </a>
+</div>
+
+@if (cargando) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="text-muted mt-2">Cargando información...</p>
+  </div>
+} @else {
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+
+      <form [formGroup]="formulario" (ngSubmit)="guardarLaboratorio()">
+
+        <div class="row g-3">
+
+          <!-- Nombre -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              Nombre del laboratorio *
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              formControlName="nombre"
+              placeholder="Ej. Laboratorio de Redes">
+
+            @if (f.nombre.touched && f.nombre.errors?.['required']) {
+              <small class="text-danger">
+                El nombre es obligatorio.
+              </small>
+            }
+
+            @if (f.nombre.touched && f.nombre.errors?.['minlength']) {
+              <small class="text-danger">
+                El nombre debe tener al menos 3 caracteres.
+              </small>
+            }
+
+            @if (f.nombre.touched && f.nombre.errors?.['nombreInvalido']) {
+              <small class="text-danger">
+                El nombre contiene caracteres no permitidos.
+              </small>
+            }
+          </div>
+
+          <!-- Sede -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              Sede *
+            </label>
+
+            <select class="form-select" formControlName="sede">
+              <option value="">Selecciona una sede</option>
+              <option value="Lima Centro">Lima Centro</option>
+              <option value="Lima Norte">Lima Norte</option>
+              <option value="Lima Sur">Lima Sur</option>
+              <option value="Lima Este">Lima Este</option>
+            </select>
+
+            @if (f.sede.touched && f.sede.invalid) {
+              <small class="text-danger">
+                Debes seleccionar una sede.
+              </small>
+            }
+          </div>
+
+          <!-- Piso -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              Piso *
+            </label>
+
+            <input
+              type="number"
+              class="form-control"
+              formControlName="piso">
+
+            @if (f.piso.touched && f.piso.invalid) {
+              <small class="text-danger">
+                El piso debe estar entre 1 y 20.
+              </small>
+            }
+          </div>
+
+          <!-- Capacidad -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              Capacidad de personas *
+            </label>
+
+            <input
+              type="number"
+              class="form-control"
+              formControlName="capacidad">
+
+            @if (f.capacidad.touched && f.capacidad.invalid) {
+              <small class="text-danger">
+                La capacidad debe estar entre 1 y 100 personas.
+              </small>
+            }
+          </div>
+
+          <!-- Equipos -->
+          <div class="col-md-12">
+            <label class="form-label fw-semibold">
+              Equipos disponibles *
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              formControlName="equipos"
+              placeholder="Computadoras, Proyectores, Routers">
+
+            <small class="text-muted">
+              Separa los equipos mediante comas.
+            </small>
+
+            @if (f.equipos.touched && f.equipos.invalid) {
+              <div class="text-danger small">
+                Debes ingresar al menos un equipo.
+              </div>
+            }
+          </div>
+
+          <!-- Estado -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              Estado *
+            </label>
+
+            <select class="form-select" formControlName="estado">
+              <option value="disponible">Disponible</option>
+              <option value="mantenimiento">Mantenimiento</option>
+            </select>
+          </div>
+
+          <!-- Descripción -->
+          <div class="col-md-12">
+            <label class="form-label fw-semibold">
+              Descripción *
+            </label>
+
+            <textarea
+              class="form-control"
+              rows="4"
+              formControlName="descripcion"
+              placeholder="Describe las características del laboratorio...">
+            </textarea>
+
+            @if (f.descripcion.touched && f.descripcion.errors?.['required']) {
+              <small class="text-danger">
+                La descripción es obligatoria.
+              </small>
+            }
+
+            @if (f.descripcion.touched && f.descripcion.errors?.['minlength']) {
+              <small class="text-danger">
+                Escribe al menos 10 caracteres.
+              </small>
+            }
+
+            @if (f.descripcion.touched && f.descripcion.errors?.['maxlength']) {
+              <small class="text-danger">
+                La descripción no debe superar los 250 caracteres.
+              </small>
+            }
+          </div>
+
+        </div>
+
+        @if (mensajeError) {
+          <div class="alert alert-danger mt-3">
+            {{ mensajeError }}
+          </div>
+        }
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+
+          <a routerLink="/laboratorios" class="btn btn-light border">
+            Cancelar
+          </a>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="guardando">
+
+            @if (guardando) {
+              Guardando...
+            } @else {
+              {{ modoEdicion ? 'Actualizar laboratorio' : 'Registrar laboratorio' }}
+            }
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+}

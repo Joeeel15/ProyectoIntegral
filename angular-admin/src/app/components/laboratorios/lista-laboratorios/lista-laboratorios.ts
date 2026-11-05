@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { CampusHubService } from '../../../services/campushub.service';
 import { Laboratorio } from '../../../models/laboratorio.interface';
 import { FormsModule } from '@angular/forms';
+import { ResaltarMantenimiento } from '../../../directives/resaltar-mantenimiento';
 
 @Component({
   selector: 'app-lista-laboratorios',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ResaltarMantenimiento],
   templateUrl: './lista-laboratorios.html',
   styleUrl: './lista-laboratorios.css',
 })

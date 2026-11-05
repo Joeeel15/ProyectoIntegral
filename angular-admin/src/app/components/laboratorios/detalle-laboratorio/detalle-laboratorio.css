@@ -1,0 +1,15 @@
+.card {
+  border-radius: 12px;
+}
+
+.badge {
+  font-weight: 600;
+}
+
+h2 {
+  color: #212529;
+}
+
+.card-body {
+  line-height: 1.6;
+}

@@ -1,0 +1,25 @@
+.card {
+  border-radius: 10px;
+}
+
+.form-label {
+  margin-bottom: 7px;
+}
+
+.form-control,
+.form-select {
+  min-height: 42px;
+}
+
+textarea.form-control {
+  min-height: 110px;
+}
+
+.text-danger {
+  display: block;
+  margin-top: 5px;
+}
+
+.btn {
+  min-width: 100px;
+}

@@ -1,0 +1,154 @@
+<div class="dashboard-header mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">Panel de administración</h2>
+    <p class="text-muted mb-0">
+      Resumen general de la gestión de laboratorios y reservas de CampusHub.
+    </p>
+  </div>
+
+  <button
+    class="btn btn-outline-primary"
+    type="button"
+    (click)="cargarDatos()"
+    [disabled]="cargando">
+    Actualizar información
+  </button>
+</div>
+
+@if (cargando) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3">Actualizando indicadores...</p>
+  </div>
+} @else {
+  @if (mensajeError) {
+    <div class="alert alert-warning">
+      {{ mensajeError }}
+    </div>
+  }
+
+  <h5 class="fw-bold mb-3">Resumen de laboratorios</h5>
+
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+      <div class="card dashboard-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-2">Total de laboratorios</p>
+          <h2 class="fw-bold text-primary">
+            {{ totalLaboratorios }}
+          </h2>
+          <span class="small text-muted">Registrados en el sistema</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card dashboard-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-2">Disponibles</p>
+          <h2 class="fw-bold text-success">
+            {{ laboratoriosDisponibles }}
+          </h2>
+          <span class="small text-muted">Listos para su utilización</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card dashboard-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-2">En mantenimiento</p>
+          <h2 class="fw-bold text-warning">
+            {{ laboratoriosMantenimiento }}
+          </h2>
+          <span class="small text-muted">No disponibles temporalmente</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h5 class="fw-bold mb-3">Resumen de reservas</h5>
+
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+      <div class="card dashboard-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-2">Total de reservas</p>
+          <h2 class="fw-bold text-primary">{{ totalReservas }}</h2>
+          <span class="small text-muted">Registradas en la API</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card dashboard-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-2">Pendientes</p>
+          <h2 class="fw-bold text-warning">{{ reservasPendientes }}</h2>
+          <span class="small text-muted">Esperando revisión</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card dashboard-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-2">Aprobadas</p>
+          <h2 class="fw-bold text-success">{{ reservasAprobadas }}</h2>
+          <span class="small text-muted">Reservas aceptadas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card dashboard-card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted mb-2">Rechazadas</p>
+          <h2 class="fw-bold text-danger">{{ reservasRechazadas }}</h2>
+          <span class="small text-muted">Reservas no aceptadas</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h5 class="fw-bold mb-3">Accesos rápidos</h5>
+
+  <div class="row g-3">
+
+    <div class="col-md-6">
+      <div class="card access-card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h5 class="fw-bold">Gestión de laboratorios</h5>
+          <p class="text-muted">
+            Consulta, registra, edita y administra los laboratorios.
+          </p>
+          <a routerLink="/laboratorios" class="btn btn-primary">
+            Ir al catálogo
+          </a>
+          <a routerLink="/laboratorios/nuevo" class="btn btn-outline-primary ms-2">
+            Registrar laboratorio
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card access-card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h5 class="fw-bold">Gestión de reservas</h5>
+          <p class="text-muted">
+            Consulta las reservas y filtra por su estado.
+          </p>
+          <a routerLink="/reservas" class="btn btn-primary">
+            Ver reservas
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+}

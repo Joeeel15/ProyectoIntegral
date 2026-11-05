@@ -1,0 +1,39 @@
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.dashboard-card {
+  border-radius: 12px;
+  min-height: 145px;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-card:hover,
+.access-card:hover {
+  transform: translateY(-3px);
+}
+
+.dashboard-card h2 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.access-card {
+  border-radius: 12px;
+  min-height: 190px;
+  transition: transform 0.2s ease;
+}
+
+.access-card p {
+  min-height: 45px;
+}
+
+@media (max-width: 576px) {
+  .dashboard-header {
+    align-items: flex-start;
+  }
+}
