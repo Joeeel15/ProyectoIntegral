@@ -1,31 +1,150 @@
-### 1. GET - Obtener la lista completa de laboratorios
-GET http://localhost:3001/laboratorios
 
-### 2. GET por ID - Obtener un laboratorio específico
-GET http://localhost:3001/laboratorios/1
+### ==========================================
+### MED TURNO - PRUEBAS DE API REST
+### Servidor: http://localhost:3001
+### ==========================================
 
-### 3. POST - Registrar un nuevo laboratorio
-POST http://localhost:3001/laboratorios
+
+### 1. OBTENER TODOS LOS USUARIOS
+# Esperado: 200 OK
+# Debe devolver 8 usuarios:
+# 2 administradores y 6 estudiantes.
+
+GET http://localhost:3001/usuarios
+
+
+### 2. OBTENER TODOS LOS MÉDICOS
+# Esperado: 200 OK
+# Debe devolver 8 médicos con sus respectivas
+# sedes, días disponibles y horarios.
+
+GET http://localhost:3001/medicos
+
+
+### 3. OBTENER TODAS LAS CITAS
+# Esperado: 200 OK
+# Inicialmente debe devolver 20 citas.
+
+GET http://localhost:3001/citas
+
+
+### ==========================================
+### PRUEBAS DE REGLAS DE NEGOCIO
+### ==========================================
+
+
+### 4. CREAR UNA CITA VÁLIDA
+# Esperado: 201 Created
+# MED-001: Dra. Gómez
+# Atiende lunes, miércoles y viernes.
+# Horario: 08:00 a 13:00.
+# Viernes 20/11/2026, de 12:00 a 12:30.
+# No existen citas que ocupen ese horario.
+
+DELETE http://localhost:3001/citas/CIT-0021
+
+###
+
+POST http://localhost:3001/citas
 Content-Type: application/json
 
 {
-  "nombre": "Laboratorio de Inteligencia Artificial 401",
-  "sede": "Lima Centro",
-  "piso": 4,
-  "capacidad": 24,
-  "equipos": ["24 computadoras GPU", "Proyector", "Pizarra"],
-  "estado": "disponible",
-  "descripcion": "Laboratorio equipado para entrenamiento de modelos de IA."
+  "id": "CIT-0021",
+  "medicoId": "MED-001",
+  "estudianteId": "USR-002",
+  "fecha": "2026-11-20",
+  "horaInicio": "12:00",
+  "horaFin": "12:30",
+  "estado": "programada",
+  "creadoEn": "2026-11-09T15:00:00"
 }
 
-### 4. PATCH - Actualizar datos de un laboratorio existente
-PATCH http://localhost:3001/laboratorios/1
+
+### 5. ERROR: CRUCE DE HORARIOS
+# Esperado: 409 Conflict
+# La cita CIT-0011 ya está registrada:
+# Médico: MED-001
+# Fecha: 2026-11-16
+# Horario: 08:30 a 09:00.
+# La nueva cita de 08:45 a 09:15 se cruza.
+
+POST http://localhost:3001/citas
 Content-Type: application/json
 
 {
-  "capacidad": 35,
-  "estado": "mantenimiento"
+  "id": "CIT-0022",
+  "medicoId": "MED-001",
+  "estudianteId": "USR-004",
+  "fecha": "2026-11-16",
+  "horaInicio": "08:45",
+  "horaFin": "09:15",
+  "estado": "programada",
+  "creadoEn": "2026-11-09T15:05:00"
 }
 
-### 5. DELETE - Eliminar un laboratorio de la base de datos
-DELETE http://localhost:3001/laboratorios/8
+
+### 6. ERROR: ADMINISTRADOR COMO PACIENTE
+# Esperado: 400 Bad Request
+# USR-001 tiene rol "admin".
+# Solo los estudiantes pueden reservar citas.
+
+POST http://localhost:3001/citas
+Content-Type: application/json
+
+{
+  "id": "CIT-0023",
+  "medicoId": "MED-002",
+  "estudianteId": "USR-001",
+  "fecha": "2026-11-16",
+  "horaInicio": "10:00",
+  "horaFin": "10:30",
+  "estado": "programada",
+  "creadoEn": "2026-11-09T15:10:00"
+}
+
+
+### 7. ERROR: DÍA NO DISPONIBLE
+# Esperado: 400 Bad Request
+# MED-001 solo atiende lunes, miércoles y viernes.
+# El 21/11/2026 es sábado.
+
+POST http://localhost:3001/citas
+Content-Type: application/json
+
+{
+  "id": "CIT-0024",
+  "medicoId": "MED-001",
+  "estudianteId": "USR-006",
+  "fecha": "2026-11-21",
+  "horaInicio": "10:00",
+  "horaFin": "10:30",
+  "estado": "programada",
+  "creadoEn": "2026-11-09T15:15:00"
+}
+
+
+### 8. CREAR CITA EN HORARIO CANCELADO
+# Esperado: 201 Created
+# CIT-0018 está cancelada.
+# Médico: MED-008
+# Fecha: 2026-11-17
+# Horario: 17:00 a 17:30.
+# Las citas canceladas no ocupan horarios.
+
+DELETE http://localhost:3001/citas/CIT-0021
+
+###
+
+POST http://localhost:3001/citas
+Content-Type: application/json
+
+{
+  "id": "CIT-0025",
+  "medicoId": "MED-008",
+  "estudianteId": "USR-005",
+  "fecha": "2026-11-17",
+  "horaInicio": "17:00",
+  "horaFin": "17:30",
+  "estado": "programada",
+  "creadoEn": "2026-11-09T15:20:00"
+}

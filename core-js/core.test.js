@@ -1,194 +1,190 @@
-
-import { test } from "node:test";
+import { test, describe } from "node:test";
 import assert from "node:assert/strict";
+import { Medico, Cita } from "./modelos.js";
 
-// Importar validadores
 import {
-    esCorreoUTP,
-    esCodigoAlumno,
-    esHora,
-    esFecha,
-    validarCorreoUTP
-} from "./validadores.js";
-
-// Importar modelos
-import {
-    Usuario,
-    Laboratorio,
-    Reserva
-} from "./modelos.js";
-
-// Importar estadísticas
-import {
-    contarReservasPorEstado,
-    calcularOcupacionPorLaboratorio,
-    obtenerSedesUnicas,
-    obtenerRankingLaboratorios,
-    crearGeneradorCodigos
+  contarCitasPorEstado,
+  calcularOcupacionPorMedico,
+  obtenerRankingMedicos,
+  crearGeneradorCodigos,
 } from "./estadisticas.js";
 
-// ==========================================
-// PRUEBAS DE VALIDADORES
-// ==========================================
+describe("Pruebas del Sistema MediTurno", () => {
+  // --- Pruebas de Modelos ---
 
-test("1. Debe aceptar el correo institucional que coincide con el codigo", () => {
-    assert.equal(
-        esCorreoUTP("U12345678@utp.edu.pe", "U12345678"),
-        true
+  test("1. Debe instanciar un Medico con los atributos correctos, incluyendo sede y horarios", () => {
+    const medico = new Medico(
+      "MED-001",
+      "Dra. Gómez",
+      "Neurología",
+      "204",
+      "Lima Norte",
+      ["lunes"],
+      { horaInicio: "08:00", horaFin: "13:00" },
     );
-});
+    assert.strictEqual(medico.id, "MED-001");
+    assert.strictEqual(medico.sede, "Lima Norte");
+    assert.strictEqual(medico.horarioAtencion.horaInicio, "08:00");
+  });
 
-test("2. Debe rechazar correos que no tengan el formato institucional", () => {
-    assert.equal(esCorreoUTP("alumno@gmail.com", "U12345678"), false);
-    assert.equal(esCorreoUTP("alumno@utp.edu.pe", "U12345678"), false);
-});
-
-test("3. Debe aceptar un código de alumno válido", () => {
-    assert.equal(esCodigoAlumno("U20231234"), true);
-});
-
-test("4. Debe rechazar un código de alumno inválido", () => {
-    assert.equal(esCodigoAlumno("A20231234"), false);
-});
-
-test("5. Debe rechazar un correo que no coincida con el codigo del estudiante", () => {
-    assert.equal(
-        esCorreoUTP("U87654321@utp.edu.pe", "U12345678"),
-        false
+  test("2. Debe instanciar una Cita con los atributos correctos, incluyendo estudianteId", () => {
+    const cita = new Cita(
+      "CIT-0001",
+      "MED-001",
+      "USR-002",
+      "2026-11-20",
+      "11:00",
+      "11:30",
     );
-});
+    assert.strictEqual(cita.medicoId, "MED-001");
+    assert.strictEqual(cita.estudianteId, "USR-002");
+    assert.strictEqual(cita.estado, "programada"); // Verifica el valor por defecto
+  });
 
-test("6. Debe validar correctamente las horas", () => {
-    assert.equal(esHora("08:30"), true);
-    assert.equal(esHora("25:70"), false);
-});
+  // --- Pruebas de Regla de Negocio (seCruzaCon) ---
 
-test("7. Debe validar fechas reales en formato AAAA-MM-DD", () => {
-    assert.equal(esFecha("2026-11-20"), true);
-    assert.equal(esFecha("2026-02-30"), false);
-});
-
-test("8. Debe generar un mensaje de error para un correo incorrecto", () => {
-    const mensaje = validarCorreoUTP(
-        "alumno@gmail.com",
-        "U12345678"
+  test("3. seCruzaCon: Detecta coincidencia de horario para el mismo médico y fecha", () => {
+    const cita1 = new Cita(
+      "CIT-0001",
+      "MED-001",
+      "PAC-001",
+      "2026-11-20",
+      "09:00",
+      "10:00",
     );
+    const cita2 = new Cita(
+      "CIT-0002",
+      "MED-001",
+      "PAC-002",
+      "2026-11-20",
+      "09:30",
+      "10:30",
+    );
+    assert.strictEqual(cita1.seCruzaCon(cita2), true);
+  });
 
-    assert.ok(mensaje.includes("no es válido"));
-});
+  test("4. seCruzaCon: No hay cruce si una cita termina exactamente cuando empieza la otra", () => {
+    const cita1 = new Cita(
+      "CIT-0001",
+      "MED-001",
+      "PAC-001",
+      "2026-11-20",
+      "09:00",
+      "10:00",
+    );
+    const cita2 = new Cita(
+      "CIT-0002",
+      "MED-001",
+      "PAC-002",
+      "2026-11-20",
+      "10:00",
+      "11:00",
+    );
+    assert.strictEqual(cita1.seCruzaCon(cita2), false);
+  });
 
-// ==========================================
-// PRUEBAS DE MODELOS
-// ==========================================
+  test("5. seCruzaCon: No hay cruce si es el mismo médico pero en fechas distintas", () => {
+    const cita1 = new Cita(
+      "CIT-0001",
+      "MED-001",
+      "PAC-001",
+      "2026-11-20",
+      "09:00",
+      "10:00",
+    );
+    const cita2 = new Cita(
+      "CIT-0002",
+      "MED-001",
+      "PAC-002",
+      "2026-11-21",
+      "09:00",
+      "10:00",
+    );
+    assert.strictEqual(cita1.seCruzaCon(cita2), false);
+  });
 
-test("8. Debe crear correctamente un usuario administrador", () => {
-    const usuario = new Usuario({
-        id: 1,
-        nombre: "Ana Torres",
-        correo: "ana@utp.edu.pe",
-        codigo: "U20231234",
-        rol: "admin",
-        password: "admin123"
+  test("6. seCruzaCon: No hay cruce a la misma hora y fecha si son médicos distintos", () => {
+    const cita1 = new Cita(
+      "CIT-0001",
+      "MED-001",
+      "PAC-001",
+      "2026-11-20",
+      "09:00",
+      "10:00",
+    );
+    const cita2 = new Cita(
+      "CIT-0002",
+      "MED-002",
+      "PAC-002",
+      "2026-11-20",
+      "09:00",
+      "10:00",
+    );
+    assert.strictEqual(cita1.seCruzaCon(cita2), false);
+  });
+
+  test("7. seCruzaCon: Lanza error si el argumento no es una instancia de Cita", () => {
+    const cita1 = new Cita(
+      "CIT-0001",
+      "MED-001",
+      "PAC-001",
+      "2026-11-20",
+      "09:00",
+      "10:00",
+    );
+    const citaFalsa = {
+      medicoId: "MED-001",
+      fecha: "2026-11-20",
+      horaInicio: "09:00",
+      horaFin: "10:00",
+    };
+
+    assert.throws(() => cita1.seCruzaCon(citaFalsa), {
+      message: "Debe comparar con otra instancia de Cita",
     });
+  });
 
-    assert.equal(usuario.nombre, "Ana Torres");
-    assert.equal(usuario.esAdministrador(), true);
-});
+  // --- Pruebas de Estadísticas ---
 
-test("9. Debe comprobar la disponibilidad de un laboratorio", () => {
-    const laboratorio = new Laboratorio({
-        id: 1,
-        nombre: "Laboratorio A-301",
-        sede: "Lima Centro",
-        capacidad: 30,
-        equipos: ["PC i7", "Proyector"],
-        estado: "disponible"
-    });
-
-    assert.equal(laboratorio.estaDisponible(), true);
-});
-
-test("10. Debe calcular la duración de una reserva", () => {
-    const reserva = new Reserva({
-        laboratorioId: 1,
-        fecha: "2026-11-20",
-        horaInicio: "08:00",
-        horaFin: "11:00"
-    });
-
-    assert.equal(reserva.duracionHoras(), 3);
-});
-
-test("11. Debe detectar el cruce de dos reservas", () => {
-    const reserva1 = new Reserva({
-        laboratorioId: 1,
-        fecha: "2026-11-20",
-        horaInicio: "08:00",
-        horaFin: "10:00"
-    });
-
-    const reserva2 = new Reserva({
-        laboratorioId: 1,
-        fecha: "2026-11-20",
-        horaInicio: "09:00",
-        horaFin: "11:00"
-    });
-
-    assert.equal(reserva1.seCruzaCon(reserva2), true);
-});
-
-// ==========================================
-// PRUEBAS DE ESTADISTICAS
-// ==========================================
-
-test("12. Debe contar reservas, calcular ocupación, obtener sedes, ranking y códigos", () => {
-
-    const reservas = [
-        { laboratorioId: 1, estado: "aprobada" },
-        { laboratorioId: 1, estado: "pendiente" },
-        { laboratorioId: 2, estado: "rechazada" },
-        { laboratorioId: 1, estado: "aprobada" }
+  test("8. contarCitasPorEstado: Agrupa y cuenta correctamente por estado", () => {
+    const citas = [
+      { estado: "atendida" },
+      { estado: "programada" },
+      { estado: "atendida" },
     ];
+    const resultado = contarCitasPorEstado(citas);
+    assert.deepEqual(resultado, { atendida: 2, programada: 1 });
+  });
 
-    const laboratorios = [
-        { id: 1, nombre: "Lab A-301", sede: "Lima Centro" },
-        { id: 2, nombre: "Lab B-205", sede: "Lima Sur" },
-        { id: 3, nombre: "Lab C-101", sede: "Lima Centro" }
+  test("9. calcularOcupacionPorMedico: Suma correctamente las citas asignadas a cada médico", () => {
+    const citas = [
+      { medicoId: "MED-001" },
+      { medicoId: "MED-002" },
+      { medicoId: "MED-001" },
     ];
+    const resultado = calcularOcupacionPorMedico(citas);
+    assert.deepEqual(resultado, { "MED-001": 2, "MED-002": 1 });
+  });
 
-    // Comprobar reduce
-    const conteo = contarReservasPorEstado(reservas);
+  test("10. obtenerRankingMedicos: Ordena el arreglo de médicos de mayor a menor ocupación", () => {
+    const citas = [
+      { medicoId: "MED-001" },
+      { medicoId: "MED-002" },
+      { medicoId: "MED-001" },
+    ];
+    const resultado = obtenerRankingMedicos(citas);
+    assert.deepEqual(resultado, [
+      { medicoId: "MED-001", cantidad: 2 },
+      { medicoId: "MED-002", cantidad: 1 },
+    ]);
+  });
 
-    assert.deepEqual(conteo, {
-        pendiente: 1,
-        aprobada: 2,
-        rechazada: 1
-    });
+  // --- Prueba de Utilidades ---
 
-    // Comprobar Map
-    const ocupacion = calcularOcupacionPorLaboratorio(reservas);
-
-    assert.equal(ocupacion.get(1), 3);
-    assert.equal(ocupacion.get(2), 1);
-
-    // Comprobar Set
-    const sedes = obtenerSedesUnicas(laboratorios);
-
-    assert.deepEqual(sedes, ["Lima Centro", "Lima Sur"]);
-
-    // Comprobar ranking
-    const ranking = obtenerRankingLaboratorios(
-        laboratorios,
-        reservas
-    );
-
-    assert.equal(ranking[0].id, 1);
-    assert.equal(ranking[0].totalReservas, 3);
-
-    // Comprobar closure y padStart
-    const generarCodigo = crearGeneradorCodigos();
-
-    assert.equal(generarCodigo(), "RES-0001");
-    assert.equal(generarCodigo(), "RES-0002");
-    assert.equal(generarCodigo(), "RES-0003");
+  test("11. crearGeneradorCodigos: Emite prefijos CIT- correlativos con padding", () => {
+    const generar = crearGeneradorCodigos();
+    assert.strictEqual(generar(), "CIT-0001");
+    assert.strictEqual(generar(), "CIT-0002");
+    assert.strictEqual(generar(), "CIT-0003");
+  });
 });

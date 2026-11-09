@@ -1,94 +1,69 @@
-
 // ==========================================
-// 1. CONTAR RESERVAS POR ESTADO CON REDUCE
-// ==========================================
-
-export const contarReservasPorEstado = (reservas) => {
-
-    return reservas.reduce((contador, reserva) => {
-
-        contador[reserva.estado] =
-            (contador[reserva.estado] || 0) + 1;
-
-        return contador;
-
-    }, {
-        pendiente: 0,
-        aprobada: 0,
-        rechazada: 0
-    });
-};
-
-// ==========================================
-// 2. OCUPACION POR LABORATORIO CON MAP
+// 1. CONTAR CITAS POR ESTADO CON REDUCE
 // ==========================================
 
-export const calcularOcupacionPorLaboratorio = (reservas) => {
+export function contarCitasPorEstado(citas) {
+  return citas.reduce((acumulador, cita) => {
+    const estado = cita.estado || "programada";
 
-    const ocupacion = new Map();
+    acumulador[estado] = (acumulador[estado] || 0) + 1;
 
-    reservas.forEach((reserva) => {
+    return acumulador;
+  }, {});
+}
 
-        const id = reserva.laboratorioId;
 
-        ocupacion.set(
-            id,
-            (ocupacion.get(id) || 0) + 1
-        );
+// ==========================================
+// 2. OCUPACION POR MÉDICO CON MAP
+// ==========================================
 
-    });
+export function calcularOcupacionPorMedico(citas) {
+  return citas.reduce((acumulador, cita) => {
+    const id = cita.medicoId;
 
-    return ocupacion;
-};
+    acumulador[id] = (acumulador[id] || 0) + 1;
+
+    return acumulador;
+  }, {});
+}
+
 
 // ==========================================
 // 3. OBTENER SEDES UNICAS CON SET
 // ==========================================
 
-export const obtenerSedesUnicas = (laboratorios) => {
+export const obtenerSedesUnicas = (medicos) => {
+  const sedes = new Set(medicos.map((medico) => medico.sede));
 
-    const sedes = new Set(
-        laboratorios.map(laboratorio => laboratorio.sede)
-    );
-
-    return [...sedes];
+  return [...sedes];
 };
 
+
 // ==========================================
-// 4. RANKING DE LABORATORIOS
+// 4. RANKING DE MÉDICOS
 //    UTILIZANDO SORT Y SPREAD
 // ==========================================
 
-export const obtenerRankingLaboratorios = (
-    laboratorios,
-    reservas
-) => {
+export function obtenerRankingMedicos(citas) {
+  const ocupacion = calcularOcupacionPorMedico(citas);
 
-    const ocupacion = calcularOcupacionPorLaboratorio(reservas);
+  return Object.entries(ocupacion)
 
-    const ranking = laboratorios.map((laboratorio) => ({
-        ...laboratorio,
-        totalReservas: ocupacion.get(laboratorio.id) || 0
-    }));
+    .map(([medicoId, cantidad]) => ({ medicoId, cantidad }))
+    .sort((a, b) => b.cantidad - a.cantidad);
+}
 
-    return [...ranking].sort(
-        (a, b) => b.totalReservas - a.totalReservas
-    );
-};
 
 // ==========================================
 // 5. GENERADOR DE CODIGOS CON CLOSURE
 // ==========================================
 
-export const crearGeneradorCodigos = () => {
+export function crearGeneradorCodigos() {
+  let contador = 0;
 
-    let contador = 0;
+  return function () {
+    contador++;
 
-    return () => {
-
-        contador++;
-
-        return `RES-${String(contador).padStart(4, "0")}`;
-
-    };
-};
+    return `CIT-${String(contador).padStart(4, "0")}`;
+  };
+}
