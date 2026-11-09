@@ -1,0 +1,167 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">{{ modoEdicion ? 'Editar médico' : 'Registrar médico' }}</h2>
+    <p class="text-muted mb-0">
+      {{
+        modoEdicion
+          ? 'Actualiza su información y disponibilidad.'
+          : 'Agrega un profesional al catálogo de MediTurno.'
+      }}
+    </p>
+  </div>
+  <a routerLink="/medicos" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+@if (mensajeError) {
+  <div class="alert alert-danger" role="alert">{{ mensajeError }}</div>
+}
+
+@if (cargando) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="text-muted mt-2">Cargando información...</p>
+  </div>
+} @else if (!cargaFallida && (codigoNuevo || idMedico)) {
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      <form [formGroup]="formulario" (ngSubmit)="guardarMedico()" novalidate>
+        <p class="text-muted small mb-4">
+          Código: <strong>{{ idMedico ?? codigoNuevo }}</strong> · Los campos con * son
+          obligatorios.
+        </p>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="nombre">Nombre completo *</label>
+            <input
+              class="form-control"
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej.: Dra. Gómez"
+              [class.is-invalid]="f.nombre.touched && f.nombre.invalid"
+            />
+            @if (f.nombre.touched && f.nombre.hasError('required')) {
+              <div class="invalid-feedback d-block">El nombre es obligatorio.</div>
+            } @else if (f.nombre.touched && f.nombre.hasError('minlength')) {
+              <div class="invalid-feedback d-block">Debe tener al menos 3 caracteres.</div>
+            } @else if (f.nombre.touched && f.nombre.hasError('pattern')) {
+              <div class="invalid-feedback d-block">
+                Usa solo letras, espacios, puntos, apóstrofes o guiones.
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="especialidad">Especialidad *</label>
+            <input
+              class="form-control"
+              id="especialidad"
+              formControlName="especialidad"
+              placeholder="Ej.: Medicina General"
+              [class.is-invalid]="f.especialidad.touched && f.especialidad.invalid"
+            />
+            @if (f.especialidad.touched && f.especialidad.invalid) {
+              <div class="invalid-feedback d-block">
+                Ingresa una especialidad de al menos 3 caracteres.
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="sede">Sede *</label>
+            <select
+              id="sede"
+              class="form-select"
+              formControlName="sede"
+              [class.is-invalid]="f.sede.touched && f.sede.invalid"
+            >
+              <option value="">Selecciona una sede</option>
+              <option value="Lima Norte">Lima Norte</option>
+              <option value="Lima Centro">Lima Centro</option>
+              <option value="Lima Sur">Lima Sur</option>
+            </select>
+            @if (f.sede.touched && f.sede.invalid) {
+              <div class="invalid-feedback d-block">Selecciona una sede.</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="consultorio">Consultorio *</label>
+            <input
+              id="consultorio"
+              class="form-control"
+              formControlName="consultorio"
+              placeholder="Ej.: 204"
+              [class.is-invalid]="f.consultorio.touched && f.consultorio.invalid"
+            />
+            @if (f.consultorio.touched && f.consultorio.invalid) {
+              <div class="invalid-feedback d-block">Usa de 1 a 12 letras, números o guiones.</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="estado">Estado *</label>
+            <select id="estado" class="form-select" formControlName="estado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <fieldset formGroupName="diasDisponibles" class="border rounded p-3">
+              <legend class="float-none w-auto px-2 fs-6 fw-semibold">Días de atención *</legend>
+              <div class="d-flex flex-wrap gap-3">
+                @for (dia of diasSemana; track dia.clave) {
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [id]="dia.clave"
+                      [formControlName]="dia.clave"
+                    />
+                    <label class="form-check-label" [for]="dia.clave">{{ dia.etiqueta }}</label>
+                  </div>
+                }
+              </div>
+              @if (f.diasDisponibles.touched && f.diasDisponibles.hasError('sinDias')) {
+                <div class="text-danger small mt-2">Selecciona al menos un día.</div>
+              }
+            </fieldset>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="horaInicio">Hora de inicio *</label>
+            <input
+              id="horaInicio"
+              class="form-control"
+              type="time"
+              formControlName="horaInicio"
+              [class.is-invalid]="f.horaInicio.touched && f.horaInicio.invalid"
+            />
+            @if (f.horaInicio.touched && f.horaInicio.invalid) {
+              <div class="invalid-feedback d-block">Ingresa una hora HH:mm válida.</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" for="horaFin">Hora de fin *</label>
+            <input
+              id="horaFin"
+              class="form-control"
+              type="time"
+              formControlName="horaFin"
+              [class.is-invalid]="f.horaFin.touched && f.horaFin.invalid"
+            />
+            @if (f.horaFin.touched && f.horaFin.invalid) {
+              <div class="invalid-feedback d-block">Ingresa una hora HH:mm válida.</div>
+            }
+          </div>
+          @if (formulario.touched && formulario.hasError('horarioInvalido')) {
+            <div class="col-12 text-danger small">
+              La hora de fin debe ser posterior a la de inicio.
+            </div>
+          }
+        </div>
+        <div class="d-flex justify-content-end flex-wrap gap-2 mt-4">
+          <a routerLink="/medicos" class="btn btn-outline-secondary">Cancelar</a>
+          <button class="btn btn-primary" type="submit" [disabled]="guardando || cargando">
+            {{ guardando ? 'Guardando...' : modoEdicion ? 'Guardar cambios' : 'Registrar médico' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

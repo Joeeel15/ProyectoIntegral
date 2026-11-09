@@ -1,7 +1,7 @@
 
 ### ==========================================
 ### MED TURNO - PRUEBAS DE API REST
-### Servidor: http://localhost:3001
+### Servidor: http://localhost:3000
 ### ==========================================
 
 
@@ -10,7 +10,7 @@
 # Debe devolver 8 usuarios:
 # 2 administradores y 6 estudiantes.
 
-GET http://localhost:3001/usuarios
+GET http://localhost:3000/usuarios
 
 
 ### 2. OBTENER TODOS LOS MÉDICOS
@@ -18,14 +18,14 @@ GET http://localhost:3001/usuarios
 # Debe devolver 8 médicos con sus respectivas
 # sedes, días disponibles y horarios.
 
-GET http://localhost:3001/medicos
+GET http://localhost:3000/medicos
 
 
 ### 3. OBTENER TODAS LAS CITAS
 # Esperado: 200 OK
-# Inicialmente debe devolver 20 citas.
+# La base entregada contiene 21 citas; el total cambiará tras nuevos POST.
 
-GET http://localhost:3001/citas
+GET http://localhost:3000/citas
 
 
 ### ==========================================
@@ -33,7 +33,7 @@ GET http://localhost:3001/citas
 ### ==========================================
 
 
-### 4. CREAR UNA CITA VÁLIDA
+### 4. CREAR UNA SOLICITUD DE CITA VÁLIDA
 # Esperado: 201 Created
 # MED-001: Dra. Gómez
 # Atiende lunes, miércoles y viernes.
@@ -41,11 +41,11 @@ GET http://localhost:3001/citas
 # Viernes 20/11/2026, de 12:00 a 12:30.
 # No existen citas que ocupen ese horario.
 
-DELETE http://localhost:3001/citas/CIT-0021
+DELETE http://localhost:3000/citas/CIT-0021
 
 ###
 
-POST http://localhost:3001/citas
+POST http://localhost:3000/citas
 Content-Type: application/json
 
 {
@@ -55,7 +55,7 @@ Content-Type: application/json
   "fecha": "2026-11-20",
   "horaInicio": "12:00",
   "horaFin": "12:30",
-  "estado": "programada",
+  "estado": "pendiente",
   "creadoEn": "2026-11-09T15:00:00"
 }
 
@@ -68,7 +68,7 @@ Content-Type: application/json
 # Horario: 08:30 a 09:00.
 # La nueva cita de 08:45 a 09:15 se cruza.
 
-POST http://localhost:3001/citas
+POST http://localhost:3000/citas
 Content-Type: application/json
 
 {
@@ -78,7 +78,7 @@ Content-Type: application/json
   "fecha": "2026-11-16",
   "horaInicio": "08:45",
   "horaFin": "09:15",
-  "estado": "programada",
+  "estado": "pendiente",
   "creadoEn": "2026-11-09T15:05:00"
 }
 
@@ -88,7 +88,7 @@ Content-Type: application/json
 # USR-001 tiene rol "admin".
 # Solo los estudiantes pueden reservar citas.
 
-POST http://localhost:3001/citas
+POST http://localhost:3000/citas
 Content-Type: application/json
 
 {
@@ -98,7 +98,7 @@ Content-Type: application/json
   "fecha": "2026-11-16",
   "horaInicio": "10:00",
   "horaFin": "10:30",
-  "estado": "programada",
+  "estado": "pendiente",
   "creadoEn": "2026-11-09T15:10:00"
 }
 
@@ -108,7 +108,7 @@ Content-Type: application/json
 # MED-001 solo atiende lunes, miércoles y viernes.
 # El 21/11/2026 es sábado.
 
-POST http://localhost:3001/citas
+POST http://localhost:3000/citas
 Content-Type: application/json
 
 {
@@ -118,7 +118,7 @@ Content-Type: application/json
   "fecha": "2026-11-21",
   "horaInicio": "10:00",
   "horaFin": "10:30",
-  "estado": "programada",
+  "estado": "pendiente",
   "creadoEn": "2026-11-09T15:15:00"
 }
 
@@ -131,11 +131,11 @@ Content-Type: application/json
 # Horario: 17:00 a 17:30.
 # Las citas canceladas no ocupan horarios.
 
-DELETE http://localhost:3001/citas/CIT-0021
+DELETE http://localhost:3000/citas/CIT-0025
 
 ###
 
-POST http://localhost:3001/citas
+POST http://localhost:3000/citas
 Content-Type: application/json
 
 {
@@ -145,6 +145,94 @@ Content-Type: application/json
   "fecha": "2026-11-17",
   "horaInicio": "17:00",
   "horaFin": "17:30",
-  "estado": "programada",
+  "estado": "pendiente",
   "creadoEn": "2026-11-09T15:20:00"
 }
+
+### 9. APROBAR UNA SOLICITUD PENDIENTE
+# Ejecuta primero la prueba 4 para crear CIT-0021.
+# Esperado: 200 OK, estado "aprobada".
+PATCH http://localhost:3000/citas/CIT-0021
+Content-Type: application/json
+
+{
+  "estado": "aprobada"
+}
+
+
+### 10. COMPROBAR QUE UNA CITA APROBADA OCUPA EL HORARIO
+# Ejecuta primero las pruebas 4 y 9.
+# Esperado: 409 Conflict con CIT-0021 (12:00-12:30).
+POST http://localhost:3000/citas
+Content-Type: application/json
+
+{
+  "id": "CIT-0028",
+  "medicoId": "MED-001",
+  "estudianteId": "USR-004",
+  "fecha": "2026-11-20",
+  "horaInicio": "12:15",
+  "horaFin": "12:45",
+  "estado": "pendiente",
+  "creadoEn": "2026-11-09T15:30:00"
+}
+
+
+### ==========================================
+### PASO 3: CRUD DE MÉDICOS (Angular + API)
+### ==========================================
+
+### 11. OBTENER DETALLE DE UN MÉDICO
+GET http://localhost:3000/medicos/MED-001
+
+### 12. CREAR UN MÉDICO DE PRUEBA (201 Created)
+### Ejecutar una sola vez. Para repetir, usar DELETE del punto 15 antes.
+POST http://localhost:3000/medicos
+Content-Type: application/json
+
+{
+  "id": "MED-009",
+  "nombre": "Dra. Prueba",
+  "especialidad": "Pediatría",
+  "sede": "Lima Sur",
+  "consultorio": "401",
+  "diasDisponibles": ["lunes", "jueves"],
+  "horarioAtencion": { "horaInicio": "09:00", "horaFin": "14:00" },
+  "estado": "activo"
+}
+
+### 13. MODIFICAR UN MÉDICO (200 OK)
+PUT http://localhost:3000/medicos/MED-009
+Content-Type: application/json
+
+{
+  "id": "MED-009",
+  "nombre": "Dra. Prueba Actualizada",
+  "especialidad": "Pediatría",
+  "sede": "Lima Centro",
+  "consultorio": "402",
+  "diasDisponibles": ["lunes", "miercoles", "viernes"],
+  "horarioAtencion": { "horaInicio": "08:00", "horaFin": "13:00" },
+  "estado": "activo"
+}
+
+### 14. ERROR DE VALIDACIÓN: HORAS INVERTIDAS (400)
+POST http://localhost:3000/medicos
+Content-Type: application/json
+
+{
+  "id": "MED-010",
+  "nombre": "Dr. Horario Invalido",
+  "especialidad": "Cardiología",
+  "sede": "Lima Norte",
+  "consultorio": "401",
+  "diasDisponibles": ["martes"],
+  "horarioAtencion": { "horaInicio": "18:00", "horaFin": "08:00" },
+  "estado": "activo"
+}
+
+### 15. ELIMINAR EL MÉDICO DE PRUEBA (200 OK)
+DELETE http://localhost:3000/medicos/MED-009
+
+### 16. ERROR: NO BORRAR MÉDICO CON CITAS (409 Conflict)
+DELETE http://localhost:3000/medicos/MED-001

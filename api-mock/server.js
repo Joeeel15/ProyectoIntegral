@@ -2,7 +2,8 @@
 const jsonServer = require("json-server");
 
 const server = jsonServer.create();
-const router = jsonServer.router("api-mock/db.json");
+const path = require("path");
+const router = jsonServer.router(path.join(__dirname, "db.json"));
 
 server.use(jsonServer.defaults());
 server.use(jsonServer.bodyParser);
@@ -42,6 +43,77 @@ const obtenerDia = (fecha) => {
 
   return dias[new Date(`${fecha}T12:00:00Z`).getUTCDay()];
 };
+
+// ==========================================
+// VALIDACIONES DEL CATÁLOGO DE MÉDICOS
+// ==========================================
+
+server.use((req, res, next) => {
+  const crear = req.method === "POST" && req.path === "/medicos";
+  const detalle = /^\/medicos\/[^/]+$/.test(req.path);
+  const editar = detalle && ["PUT", "PATCH"].includes(req.method);
+  const eliminar = detalle && req.method === "DELETE";
+
+  if (!crear && !editar && !eliminar) return next();
+
+  const medicos = router.db.get("medicos").value();
+  const idRuta = detalle ? decodeURIComponent(req.path.split("/").pop()) : null;
+  const actual = idRuta ? medicos.find(m => m.id === idRuta) : null;
+
+  if ((editar || eliminar) && !actual) {
+    return res.status(404).json({ error: "El médico no existe." });
+  }
+
+  if (eliminar) {
+    // No eliminar historiales de citas al borrar un médico.
+    const tieneCitas = router.db.get("citas").value()
+      .some(c => c.medicoId === idRuta);
+
+    if (tieneCitas) {
+      return res.status(409).json({
+        error: "No se puede eliminar este médico porque tiene citas asociadas. Puedes cambiar su estado a inactivo."
+      });
+    }
+    return next();
+  }
+
+  const datos = { ...(actual || {}), ...(req.body || {}) };
+  const { id, nombre, especialidad, sede, consultorio,
+    diasDisponibles, horarioAtencion, estado } = datos;
+
+  if (crear && medicos.some(m => m.id === id)) {
+    return res.status(409).json({ error: "El código del médico ya está registrado." });
+  }
+
+  if (editar && id !== idRuta) {
+    return res.status(400).json({ error: "No se permite modificar el código del médico." });
+  }
+
+  const dias = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+  const valido =
+    typeof id === "string" && /^MED-\d{3,}$/.test(id) &&
+    typeof nombre === "string" &&
+      /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ. '\-]+$/.test(nombre.trim()) && nombre.trim().length >= 3 &&
+    typeof especialidad === "string" && especialidad.trim().length >= 3 &&
+    ["Lima Norte", "Lima Centro", "Lima Sur"].includes(sede) &&
+    typeof consultorio === "string" && /^[A-Za-z0-9-]{1,12}$/.test(consultorio) &&
+    ["activo", "inactivo"].includes(estado) &&
+    Array.isArray(diasDisponibles) && diasDisponibles.length > 0 &&
+    diasDisponibles.every(d => dias.includes(d)) &&
+    new Set(diasDisponibles).size === diasDisponibles.length &&
+    horarioAtencion &&
+    esHoraValida(horarioAtencion.horaInicio) &&
+    esHoraValida(horarioAtencion.horaFin) &&
+    aMinutos(horarioAtencion.horaInicio) < aMinutos(horarioAtencion.horaFin);
+
+  if (!valido) {
+    return res.status(400).json({
+      error: "Datos del médico inválidos: revisa nombre, código, sede, consultorio, días, horas y estado."
+    });
+  }
+
+  next();
+});
 
 // ==========================================
 // VALIDACIONES DE CITAS
@@ -85,7 +157,7 @@ server.use((req, res, next) => {
     fecha,
     horaInicio,
     horaFin,
-    estado = "programada"
+    estado = "pendiente"
   } = datos;
 
   // 1. Validar campos
@@ -98,8 +170,8 @@ server.use((req, res, next) => {
 
   // 2. Validar estado
   const estadosValidos = [
-    "programada", "atendida",
-    "cancelada", "no_asistio"
+    "pendiente", "aprobada", "rechazada",
+    "programada", "atendida", "cancelada", "no_asistio"
   ];
 
   if (!estadosValidos.includes(estado)) {
@@ -144,7 +216,9 @@ server.use((req, res, next) => {
   }
 
   // 6. Validar disponibilidad del médico
-  if (estado === "programada") {
+  const ocupaHorario = !["rechazada", "cancelada"].includes(estado);
+
+  if (ocupaHorario) {
     if (medico.estado !== "activo") {
       return res.status(400).json({
         error: "El médico está inactivo."
@@ -170,7 +244,8 @@ server.use((req, res, next) => {
     const existeCruce = citas.some(cita => {
       if (String(cita.id) === idActual) return false;
 
-      if (cita.estado === "cancelada") return false;
+      // Una cita rechazada o cancelada libera el turno.
+      if (["rechazada", "cancelada"].includes(cita.estado)) return false;
 
       return cita.medicoId === medicoId &&
         cita.fecha === fecha &&
@@ -194,7 +269,7 @@ server.use((req, res, next) => {
 
 server.use(router);
 
-const PORT = 3001;
+const PORT = 3000;
 
 server.listen(PORT, () => {
   console.log(

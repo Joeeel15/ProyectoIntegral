@@ -1,9 +1,10 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
-import { CampusHubService } from '../../services/campushub.service';
-import { Laboratorio } from '../../models/laboratorio.interface';
-import { Reserva } from '../../models/reserva.interface';
+import { MediTurnoService } from '../../services/mediturno.service';
+import { Medico } from '../../models/medico.interface';
+import { Cita } from '../../models/cita.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,24 +14,30 @@ import { Reserva } from '../../models/reserva.interface';
   styleUrl: './dashboard.css'
 })
 export class Dashboard implements OnInit {
+  private readonly servicio = inject(MediTurnoService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  private servicio = inject(CampusHubService);
-  private cdr = inject(ChangeDetectorRef);
-
-  laboratorios: Laboratorio[] = [];
-  reservas: Reserva[] = [];
-
-  cargando = true;
+  medicos: Medico[] = [];
+  citas: Cita[] = [];
+  cargando = false;
   mensajeError = '';
 
-  totalLaboratorios = 0;
-  laboratoriosDisponibles = 0;
-  laboratoriosMantenimiento = 0;
+  get activos(): number {
+    return this.medicos.filter(m => m.estado === 'activo').length;
+  }
 
-  totalReservas = 0;
-  reservasPendientes = 0;
-  reservasAprobadas = 0;
-  reservasRechazadas = 0;
+  get pendientes(): number {
+    return this.citas.filter(c => c.estado === 'pendiente').length;
+  }
+
+  get aprobadas(): number {
+    // Las citas "programada" son registros anteriores al flujo de aprobación.
+    return this.citas.filter(c => ['aprobada', 'programada'].includes(c.estado)).length;
+  }
+
+  get atendidas(): number {
+    return this.citas.filter(c => c.estado === 'atendida').length;
+  }
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -40,75 +47,21 @@ export class Dashboard implements OnInit {
     this.cargando = true;
     this.mensajeError = '';
 
-    let respuestasRecibidas = 0;
-    let huboError = false;
-
-    const verificarCarga = (): void => {
-      respuestasRecibidas++;
-
-      if (respuestasRecibidas === 2) {
+    forkJoin({
+      medicos: this.servicio.obtenerMedicos(),
+      citas: this.servicio.obtenerCitas()
+    }).subscribe({
+      next: ({ medicos, citas }) => {
+        this.medicos = medicos;
+        this.citas = citas;
         this.cargando = false;
-
-        if (huboError) {
-          this.mensajeError = 'No se pudieron cargar todos los indicadores. Verifica que la API esté funcionando.';
-        }
-
-        this.cdr.detectChanges();
-      }
-    };
-
-    this.servicio.obtenerLaboratorios().subscribe({
-      next: (datos) => {
-        this.laboratorios = datos;
-        this.calcularLaboratorios();
-        verificarCarga();
+        this.cdr.markForCheck();
       },
-      error: (error) => {
-        console.error('Error al cargar laboratorios:', error);
-        huboError = true;
-        verificarCarga();
+      error: () => {
+        this.mensajeError = 'No se pudo conectar con MediTurno. Verifica que el API esté activo en el puerto 3000.';
+        this.cargando = false;
+        this.cdr.markForCheck();
       }
     });
-
-    this.servicio.obtenerReservas().subscribe({
-      next: (datos) => {
-        this.reservas = datos;
-        this.calcularReservas();
-        verificarCarga();
-      },
-      error: (error) => {
-        console.error('Error al cargar reservas:', error);
-        huboError = true;
-        verificarCarga();
-      }
-    });
-  }
-
-  private calcularLaboratorios(): void {
-    this.totalLaboratorios = this.laboratorios.length;
-
-    this.laboratoriosDisponibles = this.laboratorios.filter(
-      laboratorio => laboratorio.estado === 'disponible'
-    ).length;
-
-    this.laboratoriosMantenimiento = this.laboratorios.filter(
-      laboratorio => laboratorio.estado === 'mantenimiento'
-    ).length;
-  }
-
-  private calcularReservas(): void {
-    this.totalReservas = this.reservas.length;
-
-    this.reservasPendientes = this.reservas.filter(
-      reserva => reserva.estado === 'pendiente'
-    ).length;
-
-    this.reservasAprobadas = this.reservas.filter(
-      reserva => reserva.estado === 'aprobada'
-    ).length;
-
-    this.reservasRechazadas = this.reservas.filter(
-      reserva => reserva.estado === 'rechazada'
-    ).length;
   }
 }

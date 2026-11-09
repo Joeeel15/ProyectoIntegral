@@ -1,57 +1,41 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
   <div class="container">
-
-    <a class="navbar-brand fw-bold" routerLink="/laboratorios">
-      CampusHub
-    </a>
+    <a class="navbar-brand fw-bold" routerLink="/" (click)="cerrarMenu()">MediTurno</a>
 
     <button
       class="navbar-toggler"
       type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#menuPrincipal"
+      (click)="alternarMenu()"
       aria-controls="menuPrincipal"
-      aria-expanded="false"
-      aria-label="Mostrar navegación">
-
+      [attr.aria-expanded]="menuAbierto"
+      aria-label="Mostrar navegación"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="menuPrincipal">
-
+    <div class="collapse navbar-collapse" [class.show]="menuAbierto" id="menuPrincipal">
       <ul class="navbar-nav ms-auto">
-
         <li class="nav-item">
           <a
             class="nav-link"
             routerLink="/"
             routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }">
-            Inicio
-          </a>
+            (click)="cerrarMenu()"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Inicio</a
+          >
         </li>
-
         <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/laboratorios"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }">
-            Laboratorios
-          </a>
+          <a class="nav-link" routerLink="/medicos" routerLinkActive="active" (click)="cerrarMenu()"
+            >Médicos</a
+          >
         </li>
-
         <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/reservas"
-            routerLinkActive="active">
-            Reservas
-          </a>
+          <a class="nav-link" routerLink="/citas" routerLinkActive="active" (click)="cerrarMenu()"
+            >Citas</a
+          >
         </li>
-
       </ul>
-
     </div>
   </div>
 </nav>

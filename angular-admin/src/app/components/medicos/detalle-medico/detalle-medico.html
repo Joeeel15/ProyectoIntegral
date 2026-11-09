@@ -1,0 +1,65 @@
+@if (cargando) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="text-muted mt-2">Cargando médico...</p>
+  </div>
+} @else if (mensajeError) {
+  <div class="alert alert-danger">{{ mensajeError }}</div>
+  <a routerLink="/medicos" class="btn btn-outline-secondary">Volver a médicos</a>
+} @else if (medico) {
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Detalle del médico</h2>
+      <p class="text-muted mb-0">Información del profesional registrado.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a [routerLink]="['/medicos', medico.id, 'editar']" class="btn btn-primary">Editar médico</a>
+      <a routerLink="/medicos" class="btn btn-outline-secondary">Volver</a>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+        <div>
+          <p class="text-muted small mb-1">{{ medico.id }}</p>
+          <h3 class="fw-bold mb-1">{{ medico.nombre }}</h3>
+          <p class="text-muted mb-0">{{ medico.especialidad }}</p>
+        </div>
+        @if (medico.estado === 'activo') {
+          <span class="badge text-bg-success fs-6">Activo</span>
+        } @else {
+          <span class="badge text-bg-secondary fs-6">Inactivo</span>
+        }
+      </div>
+      <hr />
+      <h5 class="fw-semibold mb-3">Información general</h5>
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Sede</span><strong>{{ medico.sede }}</strong>
+        </div>
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Consultorio</span
+          ><strong>{{ medico.consultorio }}</strong>
+        </div>
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Inicio de atención</span>
+          <strong>{{ medico.horarioAtencion.horaInicio }}</strong>
+        </div>
+        <div class="col-sm-6">
+          <span class="text-muted d-block">Fin de atención</span>
+          <strong>{{ medico.horarioAtencion.horaFin }}</strong>
+        </div>
+      </div>
+      <hr />
+      <h5 class="fw-semibold mb-3">Días disponibles</h5>
+      <div class="d-flex flex-wrap gap-2">
+        @for (dia of medico.diasDisponibles; track dia) {
+          <span class="badge text-bg-light border text-dark p-2">{{ nombreDia(dia) }}</span>
+        } @empty {
+          <span class="text-muted">No tiene días registrados.</span>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,41 +1,18 @@
 import { Routes } from '@angular/router';
 
-import { ListaLaboratorios } from './components/laboratorios/lista-laboratorios/lista-laboratorios';
-import { FormularioLaboratorio } from './components/laboratorios/formulario-laboratorio/formulario-laboratorio';
-import { DetalleLaboratorio } from './components/laboratorios/detalle-laboratorio/detalle-laboratorio';
-import { ListaReservas } from './components/reservas/lista-reservas/lista-reservas';
 import { Dashboard } from './components/dashboard/dashboard';
+import { ListaMedicos } from './components/medicos/lista-medicos/lista-medicos';
+import { FormularioMedico } from './components/medicos/formulario-medico/formulario-medico';
+import { DetalleMedico } from './components/medicos/detalle-medico/detalle-medico';
+import { ListaCitas } from './components/citas/lista-citas/lista-citas';
 
 export const routes: Routes = [
-  { path: '', component: Dashboard },
-
-  {
-    path: 'laboratorios',
-    component: ListaLaboratorios,
-  },
-
-  {
-    path: 'laboratorios/nuevo',
-    component: FormularioLaboratorio,
-  },
-
-  {
-    path: 'laboratorios/:id/editar',
-    component: FormularioLaboratorio,
-  },
-
-  {
-    path: 'laboratorios/:id',
-    component: DetalleLaboratorio,
-  },
-
-  {
-    path: 'reservas',
-    component: ListaReservas,
-  },
-
-  {
-    path: '**',
-    redirectTo: 'laboratorios',
-  },
+  { path: '', component: Dashboard, pathMatch: 'full' },
+  { path: 'medicos', component: ListaMedicos },
+  // Orden importante: las rutas específicas preceden a /medicos/:id.
+  { path: 'medicos/nuevo', component: FormularioMedico },
+  { path: 'medicos/:id/editar', component: FormularioMedico },
+  { path: 'medicos/:id', component: DetalleMedico },
+  { path: 'citas', component: ListaCitas },
+  { path: '**', redirectTo: 'medicos' }
 ];

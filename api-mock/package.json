@@ -2,7 +2,7 @@
 {
   "name": "api-mock",
   "version": "1.0.0",
-  "description": "API REST simulada para el proyecto CampusHub",
+  "description": "API REST simulada para MediTurno",
   "main": "server.js",
   "scripts": {
     "api": "node server.js"

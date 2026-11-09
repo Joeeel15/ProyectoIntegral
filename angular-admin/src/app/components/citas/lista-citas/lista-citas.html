@@ -1,0 +1,83 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">Citas médicas</h2>
+    <p class="text-muted mb-0">Seguimiento de solicitudes y atenciones registradas.</p>
+  </div>
+  <button
+    class="btn btn-outline-primary"
+    (click)="cargarCitas()"
+    type="button"
+    [disabled]="cargando"
+  >
+    Actualizar lista
+  </button>
+</div>
+
+<div class="card border-0 shadow-sm mb-3">
+  <div class="card-body">
+    <div class="row align-items-end g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="estadoCita">Filtrar por estado</label>
+        <select
+          id="estadoCita"
+          class="form-select"
+          [value]="estadoSeleccionado"
+          (change)="cambiarEstado($event)"
+        >
+          <option value="todos">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="aprobada">Aprobada</option>
+          <option value="programada">Programada (anterior)</option>
+          <option value="atendida">Atendida</option>
+          <option value="rechazada">Rechazada</option>
+          <option value="cancelada">Cancelada</option>
+          <option value="no_asistio">No asistió</option>
+        </select>
+      </div>
+      <div class="col-md-6 text-md-end text-muted">Resultados: {{ citasFiltradas.length }}</div>
+    </div>
+  </div>
+</div>
+
+@if (cargando) {
+  <p class="text-muted">Cargando citas...</p>
+} @else if (mensajeError) {
+  <div class="alert alert-danger">{{ mensajeError }}</div>
+} @else {
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Código</th>
+            <th>Estudiante</th>
+            <th>Médico</th>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cita of citasFiltradas; track cita.id) {
+            <tr>
+              <td class="fw-semibold">{{ cita.id }}</td>
+              <td>{{ nombresUsuarios.get(cita.estudianteId) ?? cita.estudianteId }}</td>
+              <td>{{ nombresMedicos.get(cita.medicoId) ?? cita.medicoId }}</td>
+              <td>{{ cita.fecha }}</td>
+              <td>{{ cita.horaInicio }} – {{ cita.horaFin }}</td>
+              <td>
+                <span class="badge" [ngClass]="claseEstado(cita.estado)">
+                  {{ textoEstado(cita.estado) }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">No hay citas con este estado.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

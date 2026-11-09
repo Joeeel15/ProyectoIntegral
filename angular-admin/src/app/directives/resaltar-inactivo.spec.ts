@@ -1,8 +1,8 @@
-import { ResaltarMantenimiento } from './resaltar-mantenimiento';
+import { ResaltarInactivo } from './resaltar-inactivo';
 
 describe('ResaltarMantenimiento', () => {
   it('should create an instance', () => {
-    const directive = new ResaltarMantenimiento();
+    const directive = new ResaltarInactivo();
     expect(directive).toBeTruthy();
   });
 });

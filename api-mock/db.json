@@ -78,8 +78,8 @@
       "id": "MED-001",
       "nombre": "Dra. Gómez",
       "especialidad": "Neurología",
+      "consultorio": "205",
       "sede": "Lima Norte",
-      "consultorio": "204",
       "diasDisponibles": [
         "lunes",
         "miercoles",
@@ -411,16 +411,6 @@
       "horaFin": "10:30",
       "estado": "programada",
       "creadoEn": "2026-11-07T14:00:00"
-    },
-    {
-      "id": "CIT-0025",
-      "medicoId": "MED-008",
-      "estudianteId": "USR-005",
-      "fecha": "2026-11-17",
-      "horaInicio": "17:00",
-      "horaFin": "17:30",
-      "estado": "programada",
-      "creadoEn": "2026-11-09T15:20:00"
     }
   ]
 }
