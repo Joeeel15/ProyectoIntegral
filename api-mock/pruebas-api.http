@@ -236,3 +236,96 @@ DELETE http://localhost:3000/medicos/MED-009
 
 ### 16. ERROR: NO BORRAR MÉDICO CON CITAS (409 Conflict)
 DELETE http://localhost:3000/medicos/MED-001
+
+
+### ==========================================
+### PASO 4: APROBACIÓN Y RECHAZO DE CITAS
+### Ejecutar cada petición individualmente y en orden.
+### ==========================================
+
+### 17. LIMPIEZA (solo si CIT-0040 es una cita creada para estas pruebas)
+# Si no existe devolverá 404, que es normal.
+DELETE http://localhost:3000/citas/CIT-0040
+
+### 18. CREAR SOLICITUD PENDIENTE (201)
+# MED-001 atiende viernes 08:00–13:00. 27/11/2026 es viernes.
+POST http://localhost:3000/citas
+Content-Type: application/json
+
+{
+  "id": "CIT-0040",
+  "medicoId": "MED-001",
+  "estudianteId": "USR-002",
+  "fecha": "2026-11-27",
+  "horaInicio": "10:00",
+  "horaFin": "10:30",
+  "estado": "pendiente",
+  "creadoEn": "2026-11-09T16:00:00"
+}
+
+### 19. APROBAR CIT-0040 (200, estado aprobada)
+PATCH http://localhost:3000/citas/CIT-0040
+Content-Type: application/json
+
+{
+  "estado": "aprobada"
+}
+
+### 20. INTENTAR RECHAZAR UNA CITA YA APROBADA (409)
+PATCH http://localhost:3000/citas/CIT-0040
+Content-Type: application/json
+
+{
+  "estado": "rechazada"
+}
+
+### 21. REVISAR EL ESTADO ACTUAL (200, aprobada)
+GET http://localhost:3000/citas/CIT-0040
+
+### 22. LIBERAR CITA DE PRUEBA PARA PROBAR RECHAZO
+DELETE http://localhost:3000/citas/CIT-0040
+
+### 23. RECREAR SOLICITUD PENDIENTE (201)
+POST http://localhost:3000/citas
+Content-Type: application/json
+
+{
+  "id": "CIT-0040",
+  "medicoId": "MED-001",
+  "estudianteId": "USR-002",
+  "fecha": "2026-11-27",
+  "horaInicio": "10:00",
+  "horaFin": "10:30",
+  "estado": "pendiente",
+  "creadoEn": "2026-11-09T16:00:00"
+}
+
+### 24. RECHAZAR LA CITA (200, estado rechazada)
+PATCH http://localhost:3000/citas/CIT-0040
+Content-Type: application/json
+
+{
+  "estado": "rechazada"
+}
+
+### 25. VERIFICAR LIBERACIÓN DEL HORARIO (201)
+# Usa el mismo médico, fecha y horario que CIT-0040 rechazada.
+POST http://localhost:3000/citas
+Content-Type: application/json
+
+{
+  "id": "CIT-0041",
+  "medicoId": "MED-001",
+  "estudianteId": "USR-004",
+  "fecha": "2026-11-27",
+  "horaInicio": "10:00",
+  "horaFin": "10:30",
+  "estado": "pendiente",
+  "creadoEn": "2026-11-09T16:05:00"
+}
+
+### 26. LIMPIEZA OPCIONAL DE CITAS DE PRUEBA
+DELETE http://localhost:3000/citas/CIT-0041
+
+### 27. LIMPIEZA OPCIONAL DE CITAS DE PRUEBA
+DELETE http://localhost:3000/citas/CIT-0040

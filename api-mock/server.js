@@ -180,7 +180,46 @@ server.use((req, res, next) => {
     });
   }
 
-  // 3. Validar estudiante
+  // 3. Flujo de aprobación administrativa.
+  // Las citas nuevas deben entrar como solicitudes pendientes.
+  if (esCreacion) {
+    if (typeof datos.id !== "string" || !/^CIT-\d{4,}$/.test(datos.id)) {
+      return res.status(400).json({ error: "El código debe tener formato CIT-0001." });
+    }
+
+    if (estado !== "pendiente") {
+      return res.status(400).json({
+        error: "Las nuevas citas deben registrarse con estado pendiente."
+      });
+    }
+
+    if (citas.some(c => String(c.id) === String(datos.id))) {
+      return res.status(409).json({ error: "El código de la cita ya existe." });
+    }
+
+    // Persistir el valor predeterminado incluso si no llegó en el POST.
+    req.body.estado = "pendiente";
+  }
+
+  if (esEdicion && estado !== citaActual.estado) {
+    const transiciones = {
+      pendiente: ["aprobada", "rechazada", "cancelada"],
+      aprobada: ["atendida", "cancelada", "no_asistio"],
+      programada: ["atendida", "cancelada", "no_asistio"],
+      rechazada: [],
+      atendida: [],
+      cancelada: [],
+      no_asistio: []
+    };
+
+    if (!transiciones[citaActual.estado]?.includes(estado)) {
+      return res.status(409).json({
+        error: `No se puede cambiar una cita de ${citaActual.estado} a ${estado}.`
+      });
+    }
+  }
+
+  // 4. Validar estudiante
   const estudiante = db.get("usuarios")
     .find({ id: estudianteId }).value();
 
@@ -190,7 +229,7 @@ server.use((req, res, next) => {
     });
   }
 
-  // 4. Validar médico
+  // 5. Validar médico
   const medico = db.get("medicos")
     .find({ id: medicoId }).value();
 
@@ -200,7 +239,7 @@ server.use((req, res, next) => {
     });
   }
 
-  // 5. Validar fecha y horas
+  // 6. Validar fecha y horas
   if (!esFechaValida(fecha) ||
       !esHoraValida(horaInicio) ||
       !esHoraValida(horaFin)) {
@@ -215,7 +254,7 @@ server.use((req, res, next) => {
     });
   }
 
-  // 6. Validar disponibilidad del médico
+  // 7. Validar disponibilidad del médico
   const ocupaHorario = !["rechazada", "cancelada"].includes(estado);
 
   if (ocupaHorario) {
@@ -240,7 +279,7 @@ server.use((req, res, next) => {
       });
     }
 
-    // 7. Verificar cruces
+    // 8. Verificar cruces
     const existeCruce = citas.some(cita => {
       if (String(cita.id) === idActual) return false;
 

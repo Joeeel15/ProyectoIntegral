@@ -1,22 +1,56 @@
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
   <div>
-    <h2 class="fw-bold mb-1">Citas médicas</h2>
-    <p class="text-muted mb-0">Seguimiento de solicitudes y atenciones registradas.</p>
+    <h2 class="fw-bold mb-1">Administración de citas</h2>
+    <p class="text-muted mb-0">Revisa, aprueba o rechaza solicitudes de atención médica.</p>
   </div>
   <button
     class="btn btn-outline-primary"
     (click)="cargarCitas()"
     type="button"
-    [disabled]="cargando"
+    [disabled]="cargando || actualizandoId !== null"
   >
     Actualizar lista
   </button>
 </div>
 
+<div class="row g-3 mb-3">
+  <div class="col-sm-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="text-muted small">Pendientes</div>
+        <div class="h3 fw-bold text-warning mb-0">{{ pendientes }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="text-muted small">Aprobadas (flujo nuevo)</div>
+        <div class="h3 fw-bold text-primary mb-0">{{ aprobadas }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="text-muted small">Rechazadas</div>
+        <div class="h3 fw-bold text-danger mb-0">{{ rechazadas }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (mensajeExito) {
+  <div class="alert alert-success" role="status">{{ mensajeExito }}</div>
+}
+@if (mensajeError) {
+  <div class="alert alert-danger" role="alert">{{ mensajeError }}</div>
+}
+
 <div class="card border-0 shadow-sm mb-3">
   <div class="card-body">
     <div class="row align-items-end g-3">
-      <div class="col-md-6">
+      <div class="col-md-7">
         <label class="form-label" for="estadoCita">Filtrar por estado</label>
         <select
           id="estadoCita"
@@ -25,7 +59,7 @@
           (change)="cambiarEstado($event)"
         >
           <option value="todos">Todos los estados</option>
-          <option value="pendiente">Pendiente</option>
+          <option value="pendiente">Pendiente de aprobación</option>
           <option value="aprobada">Aprobada</option>
           <option value="programada">Programada (anterior)</option>
           <option value="atendida">Atendida</option>
@@ -34,15 +68,16 @@
           <option value="no_asistio">No asistió</option>
         </select>
       </div>
-      <div class="col-md-6 text-md-end text-muted">Resultados: {{ citasFiltradas.length }}</div>
+      <div class="col-md-5 text-md-end text-muted">Resultados: {{ citasFiltradas.length }}</div>
     </div>
   </div>
 </div>
 
 @if (cargando) {
-  <p class="text-muted">Cargando citas...</p>
-} @else if (mensajeError) {
-  <div class="alert alert-danger">{{ mensajeError }}</div>
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="text-muted mt-2">Cargando citas...</p>
+  </div>
 } @else {
   <div class="card border-0 shadow-sm">
     <div class="table-responsive">
@@ -55,6 +90,7 @@
             <th>Fecha</th>
             <th>Horario</th>
             <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -67,13 +103,37 @@
               <td>{{ cita.horaInicio }} – {{ cita.horaFin }}</td>
               <td>
                 <span class="badge" [ngClass]="claseEstado(cita.estado)">
-                  {{ textoEstado(cita.estado) }}
+                  {{ cita.estado | estadoCita }}
                 </span>
+              </td>
+              <td>
+                @if (cita.estado === 'pendiente') {
+                  <div class="d-flex flex-wrap gap-1">
+                    <button
+                      class="btn btn-sm btn-success"
+                      type="button"
+                      [disabled]="actualizandoId !== null"
+                      (click)="aprobar(cita)"
+                    >
+                      {{ actualizandoId === cita.id ? 'Guardando…' : 'Aprobar' }}
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      type="button"
+                      [disabled]="actualizandoId !== null"
+                      (click)="rechazar(cita)"
+                    >
+                      Rechazar
+                    </button>
+                  </div>
+                } @else {
+                  <span class="text-muted small">Revisada</span>
+                }
               </td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="6" class="text-center text-muted py-4">No hay citas con este estado.</td>
+              <td colspan="7" class="text-center text-muted py-4">No hay citas con este estado.</td>
             </tr>
           }
         </tbody>
@@ -81,3 +141,8 @@
     </div>
   </div>
 }
+
+<p class="small text-muted mt-3">
+  Los registros anteriores con estado «programada» se conservan por compatibilidad; solo las
+  solicitudes «pendiente» muestran botones de aprobación.
+</p>
