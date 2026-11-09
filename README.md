@@ -1,6 +1,6 @@
 # MediTurno — Sistema de citas médicas universitarias
 
-Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado. Un estudiante puede solicitar atención con cualquier médico, independientemente de su sede. Los administradores gestionan médicos y, en los siguientes avances, aprobarán o rechazarán las citas.
+Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado. Un estudiante puede solicitar atención con cualquier médico, independientemente de su sede. Los administradores gestionan médicos y pueden aprobar o rechazar solicitudes de citas pendientes desde Angular.
 
 ## Integrantes
 
@@ -13,7 +13,7 @@ Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado
 
 - `core-js/`: modelos `Usuario`, `Medico` y `Cita`, validadores, estadísticas y pruebas con `node:test`.
 - `api-mock/`: API REST con `json-server@0.17.4` y `db.json`; middleware para validación de citas y de médicos.
-- `angular-admin/`: panel administrativo Angular + Bootstrap. Incluye dashboard, CRUD de médicos y listado de citas.
+- `angular-admin/`: panel administrativo Angular + Bootstrap. Incluye dashboard, CRUD de médicos y gestión de citas pendientes con pipe de estados.
 
 Los componentes antiguos de CampusHub aún se conservan como referencia dentro de `angular-admin/src/app/components/laboratorios` y `reservas`, pero ya no forman parte de las rutas utilizadas.
 
@@ -48,7 +48,7 @@ Abre <http://localhost:4200>.
 | `/medicos/nuevo` | Crear médico |
 | `/medicos/:id` | Detalle de médico |
 | `/medicos/:id/editar` | Editar médico |
-| `/citas` | Listar y filtrar citas |
+| `/citas` | Listar, filtrar, aprobar y rechazar citas pendientes |
 
 La eliminación de médicos con citas asociadas se bloquea para no dejar referencias huérfanas. Para demostrar eliminación, crea un médico de prueba y elimínalo antes de asignarle citas.
 
@@ -67,5 +67,4 @@ node --test
 
 - La API mock aún no implementa autenticación ni autorización; utilízala únicamente con credenciales ficticias y en un entorno local.
 - Los estados del flujo de citas son `pendiente`, `aprobada`, `rechazada`, `atendida` y `cancelada`, conservando `programada` y `no_asistio` por compatibilidad con datos anteriores.
-- Queda pendiente adaptar el pipe de citas, los botones de aprobar/rechazar en Angular y preparar los siguientes frontends conforme a los avances del curso.
 - Se ha utilizado asistencia de IA para revisar y adaptar partes de la implementación; el equipo debe comprender y poder explicar cada cambio, conforme al enunciado del curso.

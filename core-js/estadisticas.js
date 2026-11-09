@@ -12,21 +12,20 @@ export function contarCitasPorEstado(citas) {
   }, {});
 }
 
-
 // ==========================================
 // 2. OCUPACION POR MÉDICO CON MAP
 // ==========================================
 
 export function calcularOcupacionPorMedico(citas) {
-  return citas.reduce((acumulador, cita) => {
+  const ocupacion = new Map();
+
+  citas.forEach((cita) => {
     const id = cita.medicoId;
+    ocupacion.set(id, (ocupacion.get(id) || 0) + 1);
+  });
 
-    acumulador[id] = (acumulador[id] || 0) + 1;
-
-    return acumulador;
-  }, {});
+  return ocupacion;
 }
-
 
 // ==========================================
 // 3. OBTENER SEDES UNICAS CON SET
@@ -38,7 +37,6 @@ export const obtenerSedesUnicas = (medicos) => {
   return [...sedes];
 };
 
-
 // ==========================================
 // 4. RANKING DE MÉDICOS
 //    UTILIZANDO SORT Y SPREAD
@@ -47,12 +45,10 @@ export const obtenerSedesUnicas = (medicos) => {
 export function obtenerRankingMedicos(citas) {
   const ocupacion = calcularOcupacionPorMedico(citas);
 
-  return Object.entries(ocupacion)
-
+  return [...ocupacion]
     .map(([medicoId, cantidad]) => ({ medicoId, cantidad }))
     .sort((a, b) => b.cantidad - a.cantidad);
 }
-
 
 // ==========================================
 // 5. GENERADOR DE CODIGOS CON CLOSURE

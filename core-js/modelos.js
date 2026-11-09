@@ -151,6 +151,10 @@ export class Cita {
     return this._creadoEn;
   }
 
+  duracionHoras() {
+    return (aMinutos(this._horaFin) - aMinutos(this._horaInicio)) / 60;
+  }
+
   seCruzaCon(otraCita) {
     if (!(otraCita instanceof Cita))
       throw new Error("Debe comparar con otra instancia de Cita");
