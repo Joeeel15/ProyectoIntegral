@@ -1,7 +1,7 @@
 import FormularioCita from '../components/FormularioCita';
 import { medicos } from '../data/mediturnoData';
 
-function NuevaReserva({ onGuardar }) {
+function NuevaReserva({ citas, onGuardar }) {
   const medicosActivos = medicos.filter(
     (medico) => medico.estado === 'activo'
   );
@@ -17,6 +17,7 @@ function NuevaReserva({ onGuardar }) {
 
           <FormularioCita
             medicos={medicosActivos}
+            citas={citas}
             onGuardar={onGuardar}
           />
         </div>

@@ -9,13 +9,12 @@ Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado
 
 ## Estado de desarrollo
 
-**Avance 1 en preparación.** Este repositorio contiene:
+**Avance 1 finalizado. Avance 2 (React) desarrollado con datos locales.** Este repositorio contiene:
 
 - `core-js/`: modelos `Usuario`, `Medico` y `Cita`, validadores, estadísticas y pruebas con `node:test`.
 - `api-mock/`: API REST con `json-server@0.17.4` y `db.json`; middleware para validación de citas y de médicos.
 - `angular-admin/`: panel administrativo Angular + Bootstrap. Incluye dashboard, CRUD de médicos y gestión de citas pendientes con pipe de estados.
-
-Los componentes antiguos de CampusHub aún se conservan como referencia dentro de `angular-admin/src/app/components/laboratorios` y `reservas`, pero ya no forman parte de las rutas utilizadas.
+- `react-estudiante/`: SPA de estudiante React + Vite + Bootstrap; login simulado, catálogo, detalle, solicitudes de citas, rutas protegidas, Context y Hooks; usa copia local de `db.json`.
 
 ## Cómo ejecutar
 
@@ -39,6 +38,19 @@ npm start
 
 Abre <http://localhost:4200>.
 
+**Terminal 3 — React estudiante (puerto 5173, datos locales)**
+
+```bash
+cd react-estudiante
+npm ci
+npm run dev
+```
+
+Abre <http://localhost:5173>. React todavía **no consume la API**, por lo que
+puedes ejecutarlo sin iniciar JSON Server. Sus cambios se mantienen solamente
+hasta refrescar la página. Para las pruebas: `cd react-estudiante && npm test`.
+Más información en [`react-estudiante/README.md`](react-estudiante/README.md).
+
 ## Rutas de Angular
 
 | Ruta | Función |
@@ -54,7 +66,7 @@ La eliminación de médicos con citas asociadas se bloquea para no dejar referen
 
 ## Pruebas
 
-**JavaScript:**
+**JavaScript del núcleo (20 pruebas):**
 
 ```bash
 cd core-js

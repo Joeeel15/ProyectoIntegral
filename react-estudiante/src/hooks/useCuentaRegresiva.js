@@ -1,49 +1,31 @@
 import { useEffect, useState } from 'react';
 
 function useCuentaRegresiva(fechaHora) {
-  const [tiempoRestante, setTiempoRestante] = useState(null);
+  const [instanteActual, setInstanteActual] = useState(() => Date.now());
 
   useEffect(() => {
-    if (!fechaHora) {
-      setTiempoRestante(null);
-      return;
-    }
+    if (!fechaHora) return undefined;
 
-    const calcularTiempo = () => {
-      const diferencia =
-        new Date(fechaHora).getTime() - Date.now();
+    const intervalo = setInterval(() => {
+      setInstanteActual(Date.now());
+    }, 1000);
 
-      setTiempoRestante(Math.max(0, diferencia));
-    };
-
-    calcularTiempo();
-
-    const intervalo = setInterval(calcularTiempo, 1000);
-
-    return () => {
-      clearInterval(intervalo);
-    };
+    // No dejar temporizadores funcionando al cambiar de ruta o fecha.
+    return () => clearInterval(intervalo);
   }, [fechaHora]);
 
-  if (tiempoRestante === null) {
-    return null;
-  }
+  if (!fechaHora) return null;
 
-  const segundosTotales = Math.floor(tiempoRestante / 1000);
+  const objetivo = new Date(fechaHora).getTime();
+  if (Number.isNaN(objetivo)) return null;
 
-  const dias = Math.floor(segundosTotales / 86400);
-
-  const horas = Math.floor((segundosTotales % 86400) / 3600);
-
-  const minutos = Math.floor((segundosTotales % 3600) / 60);
-
-  const segundos = segundosTotales % 60;
+  const segundosTotales = Math.floor(Math.max(0, objetivo - instanteActual) / 1000);
 
   return {
-    dias,
-    horas,
-    minutos,
-    segundos
+    dias: Math.floor(segundosTotales / 86400),
+    horas: Math.floor((segundosTotales % 86400) / 3600),
+    minutos: Math.floor((segundosTotales % 3600) / 60),
+    segundos: segundosTotales % 60,
   };
 }
 

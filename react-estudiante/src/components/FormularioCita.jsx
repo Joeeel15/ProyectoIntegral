@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import CamposFormularioCita from "./CamposFormularioCita";
 import { validarFormularioCita } from "../utils/validarFormularioCita";
 
-function FormularioCita({ medicos = [], onGuardar }) {
+function FormularioCita({ medicos = [], citas = [], onGuardar }) {
   const campoMedico = useRef(null);
 
   const [formulario, setFormulario] = useState({
@@ -27,16 +27,13 @@ function FormularioCita({ medicos = [], onGuardar }) {
       [name]: value,
     }));
 
-    setErrores((anteriores) => ({
-      ...anteriores,
-      [name]: "",
-    }));
+    setErrores({});
   };
 
   const manejarEnvio = (e) => {
     e.preventDefault();
 
-    const nuevosErrores = validarFormularioCita(formulario);
+    const nuevosErrores = validarFormularioCita(formulario, medicos, citas);
 
     setErrores(nuevosErrores);
 

@@ -1,35 +1,16 @@
-import { useState, useEffect } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import { BrowserRouter, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
-
-import Inicio from "./pages/Inicio";
-import Catalogo from "./pages/Catalogo";
-import DetalleMedico from "./pages/DetalleMedico";
-import MisReservas from "./pages/MisReservas";
-import NuevaReserva from "./pages/NuevaReserva";
-import Login from "./pages/Login";
-import NoEncontrado from "./pages/NoEncontrado";
-
+import RutasEstudiante from "./components/RutasEstudiante";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
-
 import { citasIniciales, Cita } from "./data/mediturnoData";
+import { cancelarCitaLocal, existeCruceCita, puedeCancelarCita } from "./utils/reglasCitas";
 
 function Aplicacion() {
   const { usuario, iniciarSesion, cerrarSesion, autenticado } = useAuth();
-
   const [citas, setCitas] = useState(citasIniciales);
-
   const navigate = useNavigate();
-
   const location = useLocation();
 
   useEffect(() => {
@@ -40,13 +21,9 @@ function Aplicacion() {
       "/nueva-reserva": "Nueva cita",
       "/login": "Iniciar sesión",
     };
-
-    const tituloActual =
-      titulos[location.pathname] ||
+    const tituloActual = titulos[location.pathname] ||
       (location.pathname.startsWith("/catalogo/")
-        ? "Información del médico"
-        : "Página no encontrada");
-
+        ? "Información del médico" : "Página no encontrada");
     document.title = `${tituloActual} | MediTurno`;
   }, [location.pathname]);
 
@@ -62,81 +39,36 @@ function Aplicacion() {
 
   const manejarNuevaCita = (datos) => {
     if (!usuario) return false;
-
     const nuevaCita = new Cita(
-      `CIT-${Date.now()}`,
-      datos.medicoId,
-      usuario.id,
-      datos.fecha,
-      datos.horaInicio,
-      datos.horaFin,
-      "programada",
+      `CIT-${Date.now()}`, datos.medicoId, usuario.id,
+      datos.fecha, datos.horaInicio, datos.horaFin, "pendiente",
     );
 
-    const existeCruce = citas.some((citaExistente) => {
-      if (citaExistente.estado === "cancelada") return false;
-      return nuevaCita.seCruzaCon(citaExistente);
-    });
-
-    if (existeCruce) {
-      alert("El médico ya tiene una cita en ese horario.");
-      return false;
-    }
+    // Segunda comprobación: no depende de que el formulario esté bien conectado.
+    if (existeCruceCita(nuevaCita, citas)) return false;
 
     setCitas((anteriores) => [...anteriores, nuevaCita]);
-
-    alert("La cita se registró correctamente.");
+    alert("Solicitud registrada: tu cita está pendiente de aprobación.");
     navigate("/mis-reservas");
-
     return true;
+  };
+
+  const manejarCancelarCita = (citaId) => {
+    const seleccionada = citas.find((cita) => cita.id === citaId);
+    if (!usuario || !seleccionada || seleccionada.estudianteId !== usuario.id ||
+        !puedeCancelarCita(seleccionada)) return;
+    if (!window.confirm("¿Deseas cancelar esta cita médica?")) return;
+    setCitas((anteriores) => cancelarCitaLocal(anteriores, citaId, usuario.id));
   };
 
   return (
     <>
       <Navbar usuario={usuario} onCerrarSesion={manejarCerrarSesion} />
-
-      <Routes>
-        <Route path="/" element={<Inicio />} />
-
-        <Route path="/catalogo" element={<Catalogo />} />
-
-        <Route path="/catalogo/:id" element={<DetalleMedico />} />
-
-        <Route
-          path="/mis-reservas"
-          element={
-            autenticado ? (
-              <MisReservas usuario={usuario} citas={citas} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        <Route
-          path="/nueva-reserva"
-          element={
-            autenticado ? (
-              <NuevaReserva onGuardar={manejarNuevaCita} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        <Route
-          path="/login"
-          element={
-            autenticado ? (
-              <Navigate to="/" replace />
-            ) : (
-              <Login onLogin={manejarLogin} />
-            )
-          }
-        />
-
-        <Route path="*" element={<NoEncontrado />} />
-      </Routes>
+      <RutasEstudiante
+        usuario={usuario} autenticado={autenticado} citas={citas}
+        onGuardar={manejarNuevaCita} onLogin={manejarLogin}
+        onCancelarCita={manejarCancelarCita}
+      />
     </>
   );
 }
@@ -145,9 +77,7 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <BrowserRouter>
-          <Aplicacion />
-        </BrowserRouter>
+        <BrowserRouter><Aplicacion /></BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
   );

@@ -1,4 +1,5 @@
 import db from './db.json';
+import { existeCruceCita as comprobarCruce } from '../utils/reglasCitas.js';
 
 import {
   Usuario,
@@ -65,16 +66,9 @@ export const obtenerCitasDeEstudiante = (estudianteId) =>
     (cita) => cita.estudianteId === estudianteId
   );
 
-// Comprueba si una nueva cita se cruza
-// con otra cita activa del mismo médico.
-export const existeCruceCita = (nuevaCita) => {
-  return citasIniciales.some((citaExistente) => {
-    if (citaExistente.estado === 'cancelada') {
-      return false;
-    }
-
-    return nuevaCita.seCruzaCon(citaExistente);
-  });
-};
+// Se conserva esta función auxiliar para la copia local de datos;
+// opcionalmente acepta las citas actualizadas del estado de React.
+export const existeCruceCita = (nuevaCita, citas = citasIniciales) =>
+  comprobarCruce(nuevaCita, citas);
 
 export { Cita };
