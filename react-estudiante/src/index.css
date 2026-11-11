@@ -1,0 +1,101 @@
+/* Estilos generales de MediTurno */
+
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+  background-color: #f5f7fb;
+  color: #212529;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+main {
+  min-height: 80vh;
+}
+
+a {
+  text-decoration: none;
+}
+
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* CONTENEDOR DE TEMAS */
+.tema-claro {
+  min-height: 100vh;
+  background-color: #f5f7fb;
+  color: #212529;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tema-oscuro {
+  min-height: 100vh;
+  background-color: #121826;
+  color: #f8fafc;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* TARJETAS */
+.tema-oscuro .card {
+  background-color: #1f2937;
+  color: #f8fafc;
+  border-color: #374151;
+}
+
+/* TEXTOS */
+.tema-oscuro .text-muted {
+  color: #cbd5e1 !important;
+}
+
+.tema-oscuro .text-dark {
+  color: #f8fafc !important;
+}
+
+/* FORMULARIOS */
+.tema-oscuro .form-control,
+.tema-oscuro .form-select {
+  background-color: #1f2937;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+.tema-oscuro .form-control::placeholder {
+  color: #94a3b8;
+}
+
+.tema-oscuro .form-label {
+  color: #f8fafc;
+}
+
+/* BORDES */
+.tema-oscuro hr {
+  border-color: #64748b;
+}
+
+/* ENLACES */
+.tema-oscuro a:not(.btn) {
+  color: #93c5fd;
+}

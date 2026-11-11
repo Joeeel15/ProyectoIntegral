@@ -1,0 +1,416 @@
+{
+  "usuarios": [
+    {
+      "id": "USR-001",
+      "nombre": "Cristian Astorayme",
+      "correo": "A24230597@utp.edu.pe",
+      "codigo": "A24230597",
+      "rol": "admin",
+      "password": "Admin123",
+      "sede": null
+    },
+    {
+      "id": "USR-002",
+      "nombre": "Lucia Fernandez",
+      "correo": "U20230002@utp.edu.pe",
+      "codigo": "U20230002",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Norte"
+    },
+    {
+      "id": "USR-003",
+      "nombre": "Andrea Mendoza",
+      "correo": "A20260003@utp.edu.pe",
+      "codigo": "A20260003",
+      "rol": "admin",
+      "password": "Admin456",
+      "sede": null
+    },
+    {
+      "id": "USR-004",
+      "nombre": "Diego Ramos",
+      "correo": "U20230004@utp.edu.pe",
+      "codigo": "U20230004",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Centro"
+    },
+    {
+      "id": "USR-005",
+      "nombre": "Camila Paredes",
+      "correo": "U20240005@utp.edu.pe",
+      "codigo": "U20240005",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Sur"
+    },
+    {
+      "id": "USR-006",
+      "nombre": "Mateo Silva",
+      "correo": "U20240006@utp.edu.pe",
+      "codigo": "U20240006",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Norte"
+    },
+    {
+      "id": "USR-007",
+      "nombre": "Valeria Flores",
+      "correo": "U20250007@utp.edu.pe",
+      "codigo": "U20250007",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Centro"
+    },
+    {
+      "id": "USR-008",
+      "nombre": "Sebastian Chavez",
+      "correo": "U20250008@utp.edu.pe",
+      "codigo": "U20250008",
+      "rol": "estudiante",
+      "password": "Estudiante123",
+      "sede": "Lima Sur"
+    }
+  ],
+  "medicos": [
+    {
+      "id": "MED-001",
+      "nombre": "Dra. Gómez",
+      "especialidad": "Neurología",
+      "consultorio": "205",
+      "sede": "Lima Norte",
+      "diasDisponibles": [
+        "lunes",
+        "miercoles",
+        "viernes"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "08:00",
+        "horaFin": "13:00"
+      },
+      "estado": "activo"
+    },
+    {
+      "id": "MED-002",
+      "nombre": "Dr. Rojas",
+      "especialidad": "Medicina General",
+      "sede": "Lima Centro",
+      "consultorio": "101",
+      "diasDisponibles": [
+        "lunes",
+        "martes",
+        "jueves"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "08:00",
+        "horaFin": "14:00"
+      },
+      "estado": "activo"
+    },
+    {
+      "id": "MED-003",
+      "nombre": "Dra. Torres",
+      "especialidad": "Psicología",
+      "sede": "Lima Sur",
+      "consultorio": "302",
+      "diasDisponibles": [
+        "martes",
+        "jueves",
+        "viernes"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "09:00",
+        "horaFin": "16:00"
+      },
+      "estado": "activo"
+    },
+    {
+      "id": "MED-004",
+      "nombre": "Dr. Quispe",
+      "especialidad": "Cardiología",
+      "sede": "Lima Norte",
+      "consultorio": "205",
+      "diasDisponibles": [
+        "lunes",
+        "miercoles",
+        "viernes"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "13:00",
+        "horaFin": "18:00"
+      },
+      "estado": "activo"
+    },
+    {
+      "id": "MED-005",
+      "nombre": "Dra. Salazar",
+      "especialidad": "Dermatología",
+      "sede": "Lima Centro",
+      "consultorio": "103",
+      "diasDisponibles": [
+        "martes",
+        "jueves",
+        "sabado"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "08:00",
+        "horaFin": "13:00"
+      },
+      "estado": "activo"
+    },
+    {
+      "id": "MED-006",
+      "nombre": "Dr. Castillo",
+      "especialidad": "Traumatología",
+      "sede": "Lima Sur",
+      "consultorio": "206",
+      "diasDisponibles": [
+        "lunes",
+        "jueves",
+        "viernes"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "10:00",
+        "horaFin": "17:00"
+      },
+      "estado": "activo"
+    },
+    {
+      "id": "MED-007",
+      "nombre": "Dra. Medina",
+      "especialidad": "Nutrición",
+      "sede": "Lima Norte",
+      "consultorio": "110",
+      "diasDisponibles": [
+        "miercoles",
+        "jueves",
+        "sabado"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "09:00",
+        "horaFin": "14:00"
+      },
+      "estado": "activo"
+    },
+    {
+      "id": "MED-008",
+      "nombre": "Dr. Vargas",
+      "especialidad": "Oftalmología",
+      "sede": "Lima Centro",
+      "consultorio": "303",
+      "diasDisponibles": [
+        "lunes",
+        "martes",
+        "viernes"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "14:00",
+        "horaFin": "19:00"
+      },
+      "estado": "activo"
+    }
+  ],
+  "citas": [
+    {
+      "id": "CIT-0001",
+      "medicoId": "MED-001",
+      "estudianteId": "USR-002",
+      "fecha": "2026-11-02",
+      "horaInicio": "09:00",
+      "horaFin": "09:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-28T09:00:00"
+    },
+    {
+      "id": "CIT-0002",
+      "medicoId": "MED-002",
+      "estudianteId": "USR-004",
+      "fecha": "2026-11-02",
+      "horaInicio": "10:00",
+      "horaFin": "10:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-28T10:15:00"
+    },
+    {
+      "id": "CIT-0003",
+      "medicoId": "MED-004",
+      "estudianteId": "USR-005",
+      "fecha": "2026-11-02",
+      "horaInicio": "14:00",
+      "horaFin": "14:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-29T11:00:00"
+    },
+    {
+      "id": "CIT-0004",
+      "medicoId": "MED-006",
+      "estudianteId": "USR-006",
+      "fecha": "2026-11-02",
+      "horaInicio": "11:00",
+      "horaFin": "11:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-29T15:20:00"
+    },
+    {
+      "id": "CIT-0005",
+      "medicoId": "MED-008",
+      "estudianteId": "USR-007",
+      "fecha": "2026-11-02",
+      "horaInicio": "15:00",
+      "horaFin": "15:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-30T08:40:00"
+    },
+    {
+      "id": "CIT-0006",
+      "medicoId": "MED-003",
+      "estudianteId": "USR-008",
+      "fecha": "2026-11-03",
+      "horaInicio": "09:30",
+      "horaFin": "10:00",
+      "estado": "atendida",
+      "creadoEn": "2026-10-30T10:00:00"
+    },
+    {
+      "id": "CIT-0007",
+      "medicoId": "MED-005",
+      "estudianteId": "USR-002",
+      "fecha": "2026-11-03",
+      "horaInicio": "10:00",
+      "horaFin": "10:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-30T13:30:00"
+    },
+    {
+      "id": "CIT-0008",
+      "medicoId": "MED-008",
+      "estudianteId": "USR-004",
+      "fecha": "2026-11-03",
+      "horaInicio": "16:00",
+      "horaFin": "16:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-31T12:00:00"
+    },
+    {
+      "id": "CIT-0009",
+      "medicoId": "MED-007",
+      "estudianteId": "USR-005",
+      "fecha": "2026-11-04",
+      "horaInicio": "11:00",
+      "horaFin": "11:30",
+      "estado": "atendida",
+      "creadoEn": "2026-10-31T14:10:00"
+    },
+    {
+      "id": "CIT-0010",
+      "medicoId": "MED-001",
+      "estudianteId": "USR-006",
+      "fecha": "2026-11-04",
+      "horaInicio": "11:00",
+      "horaFin": "11:30",
+      "estado": "cancelada",
+      "creadoEn": "2026-11-01T09:15:00"
+    },
+    {
+      "id": "CIT-0011",
+      "medicoId": "MED-001",
+      "estudianteId": "USR-007",
+      "fecha": "2026-11-16",
+      "horaInicio": "08:30",
+      "horaFin": "09:00",
+      "estado": "programada",
+      "creadoEn": "2026-11-05T09:00:00"
+    },
+    {
+      "id": "CIT-0012",
+      "medicoId": "MED-002",
+      "estudianteId": "USR-008",
+      "fecha": "2026-11-16",
+      "horaInicio": "09:00",
+      "horaFin": "09:30",
+      "estado": "programada",
+      "creadoEn": "2026-11-05T10:00:00"
+    },
+    {
+      "id": "CIT-0013",
+      "medicoId": "MED-004",
+      "estudianteId": "USR-002",
+      "fecha": "2026-11-16",
+      "horaInicio": "14:30",
+      "horaFin": "15:00",
+      "estado": "programada",
+      "creadoEn": "2026-11-05T11:00:00"
+    },
+    {
+      "id": "CIT-0014",
+      "medicoId": "MED-006",
+      "estudianteId": "USR-004",
+      "fecha": "2026-11-16",
+      "horaInicio": "13:00",
+      "horaFin": "13:30",
+      "estado": "programada",
+      "creadoEn": "2026-11-06T09:00:00"
+    },
+    {
+      "id": "CIT-0015",
+      "medicoId": "MED-008",
+      "estudianteId": "USR-005",
+      "fecha": "2026-11-16",
+      "horaInicio": "16:00",
+      "horaFin": "16:30",
+      "estado": "programada",
+      "creadoEn": "2026-11-06T09:30:00"
+    },
+    {
+      "id": "CIT-0016",
+      "medicoId": "MED-003",
+      "estudianteId": "USR-006",
+      "fecha": "2026-11-17",
+      "horaInicio": "10:00",
+      "horaFin": "10:30",
+      "estado": "programada",
+      "creadoEn": "2026-11-06T10:00:00"
+    },
+    {
+      "id": "CIT-0017",
+      "medicoId": "MED-005",
+      "estudianteId": "USR-007",
+      "fecha": "2026-11-17",
+      "horaInicio": "09:00",
+      "horaFin": "09:30",
+      "estado": "programada",
+      "creadoEn": "2026-11-06T11:00:00"
+    },
+    {
+      "id": "CIT-0018",
+      "medicoId": "MED-008",
+      "estudianteId": "USR-008",
+      "fecha": "2026-11-17",
+      "horaInicio": "17:00",
+      "horaFin": "17:30",
+      "estado": "cancelada",
+      "creadoEn": "2026-11-07T12:00:00"
+    },
+    {
+      "id": "CIT-0019",
+      "medicoId": "MED-002",
+      "estudianteId": "USR-002",
+      "fecha": "2026-11-17",
+      "horaInicio": "11:00",
+      "horaFin": "11:30",
+      "estado": "programada",
+      "creadoEn": "2026-11-07T13:00:00"
+    },
+    {
+      "id": "CIT-0020",
+      "medicoId": "MED-007",
+      "estudianteId": "USR-004",
+      "fecha": "2026-11-18",
+      "horaInicio": "10:00",
+      "horaFin": "10:30",
+      "estado": "programada",
+      "creadoEn": "2026-11-07T14:00:00"
+    }
+  ]
+}
