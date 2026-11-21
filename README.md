@@ -1,6 +1,6 @@
 # MediTurno — Sistema de citas médicas universitarias
 
-Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado. Un estudiante puede solicitar atención con cualquier médico, independientemente de su sede. Los administradores gestionan médicos y pueden aprobar o rechazar solicitudes de citas pendientes desde Angular.
+Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado. Un estudiante puede solicitar atención con cualquier médico, independientemente de su sede. Los administradores gestionan médicos y pueden aprobar o rechazar solicitudes de citas pendientes desde Angular. El proyecto integra una API REST compartida por tres componentes principales: el núcleo JavaScript, el panel administrativo Angular y el portal del estudiante React.
 
 ## Integrantes
 
@@ -9,7 +9,7 @@ Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado
 
 ## Estado de desarrollo
 
-**Avance 1 finalizado. Avance 2 (React) desarrollado con datos locales.** Este repositorio contiene:
+**Avance 1, Avance 2 y Avance 3 desarrollados.** Este repositorio contiene:
 
 - `core-js/`: modelos `Usuario`, `Medico` y `Cita`, validadores, estadísticas y pruebas con `node:test`.
 - `api-mock/`: API REST con `json-server@0.17.4` y `db.json`; middleware para validación de citas y de médicos.
@@ -50,6 +50,18 @@ Abre <http://localhost:5173>. React todavía **no consume la API**, por lo que
 puedes ejecutarlo sin iniciar JSON Server. Sus cambios se mantienen solamente
 hasta refrescar la página. Para las pruebas: `cd react-estudiante && npm test`.
 Más información en [`react-estudiante/README.md`](react-estudiante/README.md).
+
+## Comparación de las librerías HTTP
+
+| Característica | Fetch API | Axios | Alova |
+|---|---|---|---|
+| Uso en MediTurno | Consultar médicos y usuarios | Crear y cancelar citas | Resumen de citas |
+| Configuración | API nativa del navegador | Instancia con baseURL | Instancia con adaptador Fetch |
+| Manejo de errores | Verificación de response.ok | Interceptor de respuesta | Estados de error de useRequest |
+| Asincronía | async/await | async/await | useRequest |
+| Caché | No se configuró | No se configuró | Caché de 30 segundos |
+| Ventaja principal | No requiere instalación adicional | Facilita las peticiones y el manejo centralizado de errores | Integra las peticiones con el estado de React |
+
 
 ## Rutas de Angular
 

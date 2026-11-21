@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, useNavigate, useLocation } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import RutasEstudiante from "./components/RutasEstudiante";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
-import { citasIniciales, Cita } from "./data/mediturnoData";
-import { cancelarCitaLocal, existeCruceCita, puedeCancelarCita } from "./utils/reglasCitas";
+import { useReservas } from "./hooks/useReservas";
 
 function Aplicacion() {
   const { usuario, iniciarSesion, cerrarSesion, autenticado } = useAuth();
-  const [citas, setCitas] = useState(citasIniciales);
+
+  const {
+    datos: citas,
+    cargando,
+    error,
+    crear,
+    cancelar,
+    actualizar
+  } = useReservas(usuario?.id);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,9 +30,11 @@ function Aplicacion() {
       "/nueva-reserva": "Nueva cita",
       "/login": "Iniciar sesión",
     };
+
     const tituloActual = titulos[location.pathname] ||
       (location.pathname.startsWith("/catalogo/")
         ? "Información del médico" : "Página no encontrada");
+
     document.title = `${tituloActual} | MediTurno`;
   }, [location.pathname]);
 
@@ -37,36 +48,52 @@ function Aplicacion() {
     navigate("/");
   };
 
-  const manejarNuevaCita = (datos) => {
+  const manejarNuevaCita = async (datos) => {
     if (!usuario) return false;
-    const nuevaCita = new Cita(
-      `CIT-${Date.now()}`, datos.medicoId, usuario.id,
-      datos.fecha, datos.horaInicio, datos.horaFin, "pendiente",
-    );
 
-    // Segunda comprobación: no depende de que el formulario esté bien conectado.
-    if (existeCruceCita(nuevaCita, citas)) return false;
-
-    setCitas((anteriores) => [...anteriores, nuevaCita]);
-    alert("Solicitud registrada: tu cita está pendiente de aprobación.");
-    navigate("/mis-reservas");
-    return true;
+    try {
+      await crear(datos);
+      alert("Solicitud registrada: tu cita está pendiente de aprobación.");
+      navigate("/mis-reservas");
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const manejarCancelarCita = (citaId) => {
+  const manejarCancelarCita = async (citaId) => {
     const seleccionada = citas.find((cita) => cita.id === citaId);
-    if (!usuario || !seleccionada || seleccionada.estudianteId !== usuario.id ||
-        !puedeCancelarCita(seleccionada)) return;
+
+    if (
+      !usuario ||
+      !seleccionada ||
+      seleccionada.estudianteId !== usuario.id
+    ) {
+      return;
+    }
+
     if (!window.confirm("¿Deseas cancelar esta cita médica?")) return;
-    setCitas((anteriores) => cancelarCitaLocal(anteriores, citaId, usuario.id));
+
+    try {
+      await cancelar(citaId);
+    } catch {
+      // El mensaje de error se muestra desde el hook.
+    }
   };
 
   return (
     <>
       <Navbar usuario={usuario} onCerrarSesion={manejarCerrarSesion} />
+
       <RutasEstudiante
-        usuario={usuario} autenticado={autenticado} citas={citas}
-        onGuardar={manejarNuevaCita} onLogin={manejarLogin}
+        usuario={usuario}
+        autenticado={autenticado}
+        citas={citas}
+        cargando={cargando}
+        error={error}
+        actualizar={actualizar}
+        onGuardar={manejarNuevaCita}
+        onLogin={manejarLogin}
         onCancelarCita={manejarCancelarCita}
       />
     </>
@@ -77,7 +104,9 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <BrowserRouter><Aplicacion /></BrowserRouter>
+        <BrowserRouter>
+          <Aplicacion />
+        </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
   );

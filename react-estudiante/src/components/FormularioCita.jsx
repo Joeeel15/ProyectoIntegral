@@ -14,6 +14,8 @@ function FormularioCita({ medicos = [], citas = [], onGuardar }) {
   });
 
   const [errores, setErrores] = useState({});
+  const [guardando, setGuardando] = useState(false);
+  const [mensajeError, setMensajeError] = useState("");
 
   useEffect(() => {
     campoMedico.current?.focus();
@@ -28,35 +30,54 @@ function FormularioCita({ medicos = [], citas = [], onGuardar }) {
     }));
 
     setErrores({});
+    setMensajeError("");
   };
 
-  const manejarEnvio = (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault();
 
-    const nuevosErrores = validarFormularioCita(formulario, medicos, citas);
+    const nuevosErrores = validarFormularioCita(
+      formulario,
+      medicos,
+      citas
+    );
 
     setErrores(nuevosErrores);
+    setMensajeError("");
 
     if (Object.keys(nuevosErrores).length > 0) {
       return;
     }
 
-    const guardado = onGuardar(formulario);
+    setGuardando(true);
 
-    // Conservar los datos si la cita no se guardó.
-    if (guardado !== true) {
-      return;
+    try {
+      const guardado = await onGuardar(formulario);
+
+      if (guardado !== true) {
+        setMensajeError(
+          "No se pudo registrar la cita. Revisa los datos e inténtalo nuevamente."
+        );
+        return;
+      }
+
+      setFormulario({
+        medicoId: "",
+        fecha: "",
+        horaInicio: "",
+        horaFin: "",
+      });
+
+      setErrores({});
+      campoMedico.current?.focus();
+
+    } catch (error) {
+      setMensajeError(
+        error.message || "Ocurrió un error al registrar la cita."
+      );
+    } finally {
+      setGuardando(false);
     }
-
-    setFormulario({
-      medicoId: "",
-      fecha: "",
-      horaInicio: "",
-      horaFin: "",
-    });
-
-    setErrores({});
-    campoMedico.current?.focus();
   };
 
   return (
@@ -75,8 +96,18 @@ function FormularioCita({ medicos = [], citas = [], onGuardar }) {
         campoMedico={campoMedico}
       />
 
-      <button type="submit" className="btn btn-primary w-100">
-        Solicitar cita
+      {mensajeError && (
+        <div className="alert alert-danger mt-3" role="alert">
+          {mensajeError}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        className="btn btn-primary w-100 mt-3"
+        disabled={guardando}
+      >
+        {guardando ? "Registrando cita..." : "Solicitar cita"}
       </button>
     </form>
   );

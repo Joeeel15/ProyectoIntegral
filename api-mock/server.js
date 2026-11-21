@@ -1,4 +1,3 @@
-
 const jsonServer = require("json-server");
 
 const server = jsonServer.create();
@@ -18,27 +17,32 @@ const aMinutos = (hora) => {
 };
 
 const esHoraValida = (hora) =>
-  typeof hora === "string" &&
-  /^([01]\d|2[0-3]):[0-5]\d$/.test(hora);
+  typeof hora === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(hora);
 
 const esFechaValida = (fecha) => {
-  if (typeof fecha !== "string" ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+  if (typeof fecha !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
     return false;
   }
 
   const [anio, mes, dia] = fecha.split("-").map(Number);
   const d = new Date(Date.UTC(anio, mes - 1, dia));
 
-  return d.getUTCFullYear() === anio &&
+  return (
+    d.getUTCFullYear() === anio &&
     d.getUTCMonth() === mes - 1 &&
-    d.getUTCDate() === dia;
+    d.getUTCDate() === dia
+  );
 };
 
 const obtenerDia = (fecha) => {
   const dias = [
-    "domingo", "lunes", "martes",
-    "miercoles", "jueves", "viernes", "sabado"
+    "domingo",
+    "lunes",
+    "martes",
+    "miercoles",
+    "jueves",
+    "viernes",
+    "sabado",
   ];
 
   return dias[new Date(`${fecha}T12:00:00Z`).getUTCDay()];
@@ -58,7 +62,7 @@ server.use((req, res, next) => {
 
   const medicos = router.db.get("medicos").value();
   const idRuta = detalle ? decodeURIComponent(req.path.split("/").pop()) : null;
-  const actual = idRuta ? medicos.find(m => m.id === idRuta) : null;
+  const actual = idRuta ? medicos.find((m) => m.id === idRuta) : null;
 
   if ((editar || eliminar) && !actual) {
     return res.status(404).json({ error: "El médico no existe." });
@@ -66,40 +70,68 @@ server.use((req, res, next) => {
 
   if (eliminar) {
     // No eliminar historiales de citas al borrar un médico.
-    const tieneCitas = router.db.get("citas").value()
-      .some(c => c.medicoId === idRuta);
+    const tieneCitas = router.db
+      .get("citas")
+      .value()
+      .some((c) => c.medicoId === idRuta);
 
     if (tieneCitas) {
       return res.status(409).json({
-        error: "No se puede eliminar este médico porque tiene citas asociadas. Puedes cambiar su estado a inactivo."
+        error:
+          "No se puede eliminar este médico porque tiene citas asociadas. Puedes cambiar su estado a inactivo.",
       });
     }
     return next();
   }
 
   const datos = { ...(actual || {}), ...(req.body || {}) };
-  const { id, nombre, especialidad, sede, consultorio,
-    diasDisponibles, horarioAtencion, estado } = datos;
+  const {
+    id,
+    nombre,
+    especialidad,
+    sede,
+    consultorio,
+    diasDisponibles,
+    horarioAtencion,
+    estado,
+  } = datos;
 
-  if (crear && medicos.some(m => m.id === id)) {
-    return res.status(409).json({ error: "El código del médico ya está registrado." });
+  if (crear && medicos.some((m) => m.id === id)) {
+    return res
+      .status(409)
+      .json({ error: "El código del médico ya está registrado." });
   }
 
   if (editar && id !== idRuta) {
-    return res.status(400).json({ error: "No se permite modificar el código del médico." });
+    return res
+      .status(400)
+      .json({ error: "No se permite modificar el código del médico." });
   }
 
-  const dias = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+  const dias = [
+    "lunes",
+    "martes",
+    "miercoles",
+    "jueves",
+    "viernes",
+    "sabado",
+    "domingo",
+  ];
   const valido =
-    typeof id === "string" && /^MED-\d{3,}$/.test(id) &&
+    typeof id === "string" &&
+    /^MED-\d{3,}$/.test(id) &&
     typeof nombre === "string" &&
-      /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ. '\-]+$/.test(nombre.trim()) && nombre.trim().length >= 3 &&
-    typeof especialidad === "string" && especialidad.trim().length >= 3 &&
+    /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ. '\-]+$/.test(nombre.trim()) &&
+    nombre.trim().length >= 3 &&
+    typeof especialidad === "string" &&
+    especialidad.trim().length >= 3 &&
     ["Lima Norte", "Lima Centro", "Lima Sur"].includes(sede) &&
-    typeof consultorio === "string" && /^[A-Za-z0-9-]{1,12}$/.test(consultorio) &&
+    typeof consultorio === "string" &&
+    /^[A-Za-z0-9-]{1,12}$/.test(consultorio) &&
     ["activo", "inactivo"].includes(estado) &&
-    Array.isArray(diasDisponibles) && diasDisponibles.length > 0 &&
-    diasDisponibles.every(d => dias.includes(d)) &&
+    Array.isArray(diasDisponibles) &&
+    diasDisponibles.length > 0 &&
+    diasDisponibles.every((d) => dias.includes(d)) &&
     new Set(diasDisponibles).size === diasDisponibles.length &&
     horarioAtencion &&
     esHoraValida(horarioAtencion.horaInicio) &&
@@ -108,7 +140,8 @@ server.use((req, res, next) => {
 
   if (!valido) {
     return res.status(400).json({
-      error: "Datos del médico inválidos: revisa nombre, código, sede, consultorio, días, horas y estado."
+      error:
+        "Datos del médico inválidos: revisa nombre, código, sede, consultorio, días, horas y estado.",
     });
   }
 
@@ -116,16 +149,61 @@ server.use((req, res, next) => {
 });
 
 // ==========================================
+// CANCELACIÓN DE CITAS MEDIANTE DELETE
+// ==========================================
+
+server.use((req, res, next) => {
+  const segmentos = req.path.split("/").filter(Boolean);
+
+  const esCancelacion =
+    req.method === "DELETE" &&
+    segmentos.length === 2 &&
+    segmentos[0] === "citas";
+
+  if (!esCancelacion) {
+    return next();
+  }
+
+  const idCita = decodeURIComponent(segmentos[1]);
+
+  const cita = router.db
+    .get("citas")
+    .find((c) => String(c.id) === idCita)
+    .value();
+
+  if (!cita) {
+    return res.status(404).json({
+      error: "La cita no existe.",
+    });
+  }
+
+  if (
+    ["cancelada", "rechazada", "atendida", "no_asistio"].includes(cita.estado)
+  ) {
+    return res.status(409).json({
+      error: "Esta cita no se puede cancelar porque ya finalizó su proceso.",
+    });
+  }
+
+  // Cancelación lógica: conservar el registro.
+  const citaCancelada = router.db
+    .get("citas")
+    .find((c) => String(c.id) === idCita)
+    .assign({ estado: "cancelada" })
+    .write();
+
+  return res.status(200).json(citaCancelada);
+});
+
+// ==========================================
 // VALIDACIONES DE CITAS
 // ==========================================
 
 server.use((req, res, next) => {
-  const esCreacion =
-    req.method === "POST" && req.path === "/citas";
+  const esCreacion = req.method === "POST" && req.path === "/citas";
 
   const esEdicion =
-    ["PUT", "PATCH"].includes(req.method) &&
-    /^\/citas\/[^/]+$/.test(req.path);
+    ["PUT", "PATCH"].includes(req.method) && /^\/citas\/[^/]+$/.test(req.path);
 
   if (!esCreacion && !esEdicion) return next();
 
@@ -137,18 +215,18 @@ server.use((req, res, next) => {
     : null;
 
   const citaActual = esEdicion
-    ? citas.find(c => String(c.id) === idActual)
+    ? citas.find((c) => String(c.id) === idActual)
     : null;
 
   if (esEdicion && !citaActual) {
     return res.status(404).json({
-      error: "La cita no existe."
+      error: "La cita no existe.",
     });
   }
 
   const datos = {
     ...(citaActual || {}),
-    ...req.body
+    ...req.body,
   };
 
   const {
@@ -157,26 +235,30 @@ server.use((req, res, next) => {
     fecha,
     horaInicio,
     horaFin,
-    estado = "pendiente"
+    estado = "pendiente",
   } = datos;
 
   // 1. Validar campos
-  if (!medicoId || !estudianteId ||
-      !fecha || !horaInicio || !horaFin) {
+  if (!medicoId || !estudianteId || !fecha || !horaInicio || !horaFin) {
     return res.status(400).json({
-      error: "Faltan datos obligatorios."
+      error: "Faltan datos obligatorios.",
     });
   }
 
   // 2. Validar estado
   const estadosValidos = [
-    "pendiente", "aprobada", "rechazada",
-    "programada", "atendida", "cancelada", "no_asistio"
+    "pendiente",
+    "aprobada",
+    "rechazada",
+    "programada",
+    "atendida",
+    "cancelada",
+    "no_asistio",
   ];
 
   if (!estadosValidos.includes(estado)) {
     return res.status(400).json({
-      error: "Estado de cita no válido."
+      error: "Estado de cita no válido.",
     });
   }
 
@@ -184,16 +266,18 @@ server.use((req, res, next) => {
   // Las citas nuevas deben entrar como solicitudes pendientes.
   if (esCreacion) {
     if (typeof datos.id !== "string" || !/^CIT-\d{4,}$/.test(datos.id)) {
-      return res.status(400).json({ error: "El código debe tener formato CIT-0001." });
+      return res
+        .status(400)
+        .json({ error: "El código debe tener formato CIT-0001." });
     }
 
     if (estado !== "pendiente") {
       return res.status(400).json({
-        error: "Las nuevas citas deben registrarse con estado pendiente."
+        error: "Las nuevas citas deben registrarse con estado pendiente.",
       });
     }
 
-    if (citas.some(c => String(c.id) === String(datos.id))) {
+    if (citas.some((c) => String(c.id) === String(datos.id))) {
       return res.status(409).json({ error: "El código de la cita ya existe." });
     }
 
@@ -209,48 +293,48 @@ server.use((req, res, next) => {
       rechazada: [],
       atendida: [],
       cancelada: [],
-      no_asistio: []
+      no_asistio: [],
     };
 
     if (!transiciones[citaActual.estado]?.includes(estado)) {
       return res.status(409).json({
-        error: `No se puede cambiar una cita de ${citaActual.estado} a ${estado}.`
+        error: `No se puede cambiar una cita de ${citaActual.estado} a ${estado}.`,
       });
     }
   }
 
   // 4. Validar estudiante
-  const estudiante = db.get("usuarios")
-    .find({ id: estudianteId }).value();
+  const estudiante = db.get("usuarios").find({ id: estudianteId }).value();
 
   if (!estudiante || estudiante.rol !== "estudiante") {
     return res.status(400).json({
-      error: "El estudiante no existe o no es válido."
+      error: "El estudiante no existe o no es válido.",
     });
   }
 
   // 5. Validar médico
-  const medico = db.get("medicos")
-    .find({ id: medicoId }).value();
+  const medico = db.get("medicos").find({ id: medicoId }).value();
 
   if (!medico) {
     return res.status(400).json({
-      error: "El médico no existe."
+      error: "El médico no existe.",
     });
   }
 
   // 6. Validar fecha y horas
-  if (!esFechaValida(fecha) ||
-      !esHoraValida(horaInicio) ||
-      !esHoraValida(horaFin)) {
+  if (
+    !esFechaValida(fecha) ||
+    !esHoraValida(horaInicio) ||
+    !esHoraValida(horaFin)
+  ) {
     return res.status(400).json({
-      error: "Fecha u horario inválido."
+      error: "Fecha u horario inválido.",
     });
   }
 
   if (aMinutos(horaInicio) >= aMinutos(horaFin)) {
     return res.status(400).json({
-      error: "La hora de inicio debe ser menor a la de fin."
+      error: "La hora de inicio debe ser menor a la de fin.",
     });
   }
 
@@ -260,41 +344,45 @@ server.use((req, res, next) => {
   if (ocupaHorario) {
     if (medico.estado !== "activo") {
       return res.status(400).json({
-        error: "El médico está inactivo."
+        error: "El médico está inactivo.",
       });
     }
 
     if (!medico.diasDisponibles.includes(obtenerDia(fecha))) {
       return res.status(400).json({
-        error: "El médico no atiende ese día."
+        error: "El médico no atiende ese día.",
       });
     }
 
     const horario = medico.horarioAtencion;
 
-    if (aMinutos(horaInicio) < aMinutos(horario.horaInicio) ||
-        aMinutos(horaFin) > aMinutos(horario.horaFin)) {
+    if (
+      aMinutos(horaInicio) < aMinutos(horario.horaInicio) ||
+      aMinutos(horaFin) > aMinutos(horario.horaFin)
+    ) {
       return res.status(400).json({
-        error: "La cita está fuera del horario de atención."
+        error: "La cita está fuera del horario de atención.",
       });
     }
 
     // 8. Verificar cruces
-    const existeCruce = citas.some(cita => {
+    const existeCruce = citas.some((cita) => {
       if (String(cita.id) === idActual) return false;
 
       // Una cita rechazada o cancelada libera el turno.
       if (["rechazada", "cancelada"].includes(cita.estado)) return false;
 
-      return cita.medicoId === medicoId &&
+      return (
+        cita.medicoId === medicoId &&
         cita.fecha === fecha &&
         aMinutos(horaInicio) < aMinutos(cita.horaFin) &&
-        aMinutos(horaFin) > aMinutos(cita.horaInicio);
+        aMinutos(horaFin) > aMinutos(cita.horaInicio)
+      );
     });
 
     if (existeCruce) {
       return res.status(409).json({
-        error: "El médico ya tiene una cita en ese horario."
+        error: "El médico ya tiene una cita en ese horario.",
       });
     }
   }
@@ -311,7 +399,5 @@ server.use(router);
 const PORT = 3000;
 
 server.listen(PORT, () => {
-  console.log(
-    `MediTurno API: http://localhost:${PORT}`
-  );
+  console.log(`MediTurno API: http://localhost:${PORT}`);
 });

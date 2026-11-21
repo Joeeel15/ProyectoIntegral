@@ -343,16 +343,6 @@
       "creadoEn": "2026-11-05T11:00:00"
     },
     {
-      "id": "CIT-0014",
-      "medicoId": "MED-006",
-      "estudianteId": "USR-004",
-      "fecha": "2026-11-16",
-      "horaInicio": "13:00",
-      "horaFin": "13:30",
-      "estado": "programada",
-      "creadoEn": "2026-11-06T09:00:00"
-    },
-    {
       "id": "CIT-0015",
       "medicoId": "MED-008",
       "estudianteId": "USR-005",
@@ -411,6 +401,26 @@
       "horaFin": "10:30",
       "estado": "programada",
       "creadoEn": "2026-11-07T14:00:00"
+    },
+    {
+      "id": "CIT-17952376078464001",
+      "medicoId": "MED-002",
+      "estudianteId": "USR-004",
+      "fecha": "2026-12-01",
+      "horaInicio": "10:00",
+      "horaFin": "12:00",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-21T05:06:47.846Z"
+    },
+    {
+      "id": "CIT-17952399817457028",
+      "medicoId": "MED-002",
+      "estudianteId": "USR-004",
+      "fecha": "2026-12-03",
+      "horaInicio": "10:00",
+      "horaFin": "12:00",
+      "estado": "cancelada",
+      "creadoEn": "2026-11-21T05:46:21.745Z"
     }
   ]
 }
