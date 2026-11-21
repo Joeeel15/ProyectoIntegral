@@ -1,6 +1,7 @@
 import ProximaCita from "../components/ProximaCita";
 import TarjetaCita from "../components/TarjetaCita";
 import ResumenCitas from "../components/ResumenCitas";
+import { useMedicosCitas } from "../hooks/useMedicosCitas";
 
 const ESTADOS_CONFIRMADOS = new Set(["aprobada", "programada"]);
 
@@ -12,6 +13,7 @@ function MisReservas({
   actualizar,
   onCancelarCita
 }) {
+  const { medicos, cargando: cargandoMedicos, error: errorMedicos, reintentar } = useMedicosCitas();
   const misCitas = citas.filter(
     (cita) => cita.estudianteId === usuario.id
   );
@@ -50,6 +52,14 @@ function MisReservas({
         Consulta tus solicitudes y el estado de tus citas médicas.
       </p>
       <ResumenCitas usuarioId={usuario.id} />
+      {cargandoMedicos && <p role="status" className="text-muted">Cargando médicos de la API...</p>}
+      {errorMedicos && (
+        <div className="alert alert-warning" role="alert">
+          {errorMedicos}
+          <button type="button" className="btn btn-outline-warning btn-sm ms-2"
+            onClick={reintentar}>Reintentar</button>
+        </div>
+      )}
 
       {cargando && (
         <div className="alert alert-info">
@@ -66,7 +76,7 @@ function MisReservas({
       {!cargando && !error && (
         <>
           {proximaCita && (
-            <ProximaCita cita={proximaCita} />
+            <ProximaCita cita={proximaCita} medicos={medicos} />
           )}
 
           {misCitas.length === 0 ? (
@@ -79,6 +89,7 @@ function MisReservas({
                 <TarjetaCita
                   key={cita.id}
                   cita={cita}
+                  medicos={medicos}
                   onCancelarCita={onCancelarCita}
                 />
               ))}

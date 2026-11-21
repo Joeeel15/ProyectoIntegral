@@ -1,10 +1,9 @@
-import { obtenerMedicoPorId } from '../data/mediturnoData';
 import useCuentaRegresiva from '../hooks/useCuentaRegresiva';
 
-function ProximaCita({ cita }) {
+function ProximaCita({ cita, medicos = [] }) {
   const fechaHora = `${cita.fecha}T${cita.horaInicio}:00`;
   const tiempo = useCuentaRegresiva(fechaHora);
-  const medico = obtenerMedicoPorId(cita.medicoId);
+  const medico = medicos.find((item) => item.id === cita.medicoId);
   if (!tiempo) return null;
 
   return (

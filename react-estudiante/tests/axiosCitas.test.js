@@ -29,11 +29,11 @@ test('Axios: crear envía POST /citas en estado pendiente', async () => {
   assert.equal(resultado.estado, 'pendiente');
 });
 
-test('Axios: cancelar envía PATCH y conserva la cita como instancia', async () => {
+test('Axios: cancelar envía DELETE y conserva la cita como instancia', async () => {
   const cliente = {
-    async patch(ruta, cuerpo) {
+    async delete(ruta) {
       assert.equal(ruta, '/citas/CIT-1000');
-      assert.deepEqual(cuerpo, { estado: 'cancelada' });
+      // El middleware responde con la cita cancelada, sin borrar el registro.
       return { data: { ...citaJSON, estado: 'cancelada' } };
     },
   };

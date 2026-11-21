@@ -14,11 +14,11 @@ Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado
 - `core-js/`: modelos `Usuario`, `Medico` y `Cita`, validadores, estadísticas y pruebas con `node:test`.
 - `api-mock/`: API REST con `json-server@0.17.4` y `db.json`; middleware para validación de citas y de médicos.
 - `angular-admin/`: panel administrativo Angular + Bootstrap. Incluye dashboard, CRUD de médicos y gestión de citas pendientes con pipe de estados.
-- `react-estudiante/`: SPA de estudiante React + Vite + Bootstrap; login simulado, catálogo, detalle, solicitudes de citas, rutas protegidas, Context y Hooks; usa copia local de `db.json`.
+- `react-estudiante/`: SPA de estudiante React + Vite + Bootstrap; login simulado contra la API, catálogo y detalle con Fetch, creación y cancelación de citas con Axios, resumen con Alova y rutas protegidas. Las citas se guardan en `api-mock/db.json`. La copia local `src/data/db.json` es un recurso heredado del Avance 2 y ya no alimenta las vistas activas.
 
 ## Cómo ejecutar
 
-Requisitos: Node.js, npm y VS Code. En la raíz del proyecto, usa dos terminales:
+Requisitos: Node.js, npm y VS Code. Desde la raíz del proyecto, abre tres terminales para utilizar Angular, React y el API compartido:
 
 **Terminal 1 — API simulada (puerto 3000)**
 
@@ -38,7 +38,7 @@ npm start
 
 Abre <http://localhost:4200>.
 
-**Terminal 3 — React estudiante (puerto 5173, datos locales)**
+**Terminal 3 — React estudiante (puerto 5173, conectado al API)**
 
 ```bash
 cd react-estudiante
@@ -46,9 +46,13 @@ npm ci
 npm run dev
 ```
 
-Abre <http://localhost:5173>. React todavía **no consume la API**, por lo que
-puedes ejecutarlo sin iniciar JSON Server. Sus cambios se mantienen solamente
-hasta refrescar la página. Para las pruebas: `cd react-estudiante && npm test`.
+Abre <http://localhost:5173>. **Es necesario iniciar primero el API** (`http://localhost:3000`).
+El catálogo, login, creación y cancelación de citas usan el servidor: los cambios
+persisten en `api-mock/db.json`, incluso después de recargar React. En «Mis citas»
+se consulta el estado cada 15 segundos; la aprobación realizada en Angular aparece
+automáticamente. La cancelación se realiza mediante `DELETE /citas/:id`, pero el
+middleware conserva el registro y cambia su estado a `cancelada` (cancelación lógica).
+Para las pruebas y la compilación: `cd react-estudiante && npm test && npm run build`.
 Más información en [`react-estudiante/README.md`](react-estudiante/README.md).
 
 ## Comparación de las librerías HTTP
@@ -84,6 +88,8 @@ La eliminación de médicos con citas asociadas se bloquea para no dejar referen
 cd core-js
 node --test
 ```
+
+**React (40 pruebas en la versión revisada):** `cd react-estudiante && npm test`.
 
 **API HTTP:** abre `api-mock/pruebas-api.http` con la extensión REST Client en VS Code y ejecuta las peticiones de una en una. Los POST, PUT y DELETE cambian `db.json`.
 

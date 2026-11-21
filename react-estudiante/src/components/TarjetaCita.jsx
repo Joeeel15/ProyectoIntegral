@@ -1,9 +1,8 @@
-import { obtenerMedicoPorId } from "../data/mediturnoData";
 import BadgeEstadoCita from "./BadgeEstadoCita";
 import { puedeCancelarCita } from "../utils/reglasCitas";
 
-function TarjetaCita({ cita, onCancelarCita }) {
-  const medico = obtenerMedicoPorId(cita.medicoId);
+function TarjetaCita({ cita, medicos = [], onCancelarCita }) {
+  const medico = medicos.find((item) => item.id === cita.medicoId);
   return (
     <div className="col-12 col-md-6">
       <div className="card border-0 shadow-sm h-100">
