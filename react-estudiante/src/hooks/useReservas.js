@@ -4,6 +4,7 @@ import {
   listarCitas,
   crearCita,
   cancelarCita,
+  marcarCitaAtendida,
 } from "../services/citasAxios.js";
 
 export function useReservas(usuarioId) {
@@ -79,12 +80,28 @@ export function useReservas(usuarioId) {
     }
   };
 
+  // Confirmación por el estudiante. El servidor verifica la ventana de 24 horas.
+  const marcarAtendida = async (citaId) => {
+    setError("");
+    try {
+      const actualizada = await marcarCitaAtendida(citaId);
+      setDatos((actuales) =>
+        actuales.map((cita) => (cita.id === citaId ? actualizada : cita)),
+      );
+      return actualizada;
+    } catch (err) {
+      setError(err.message || "No se pudo registrar la asistencia.");
+      throw err;
+    }
+  };
+
   return {
     datos,
     cargando,
     error,
     crear,
     cancelar,
+    marcarAtendida,
     actualizar,
   };
 }

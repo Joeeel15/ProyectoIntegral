@@ -1,0 +1,25 @@
+{
+  "name": "proyectointegral",
+  "version": "1.0.0",
+  "description": "Proyecto de JavaScript Avanzado, adaptado al dominio **MediTurno** del enunciado. Un estudiante puede solicitar atención con cualquier médico, independientemente de su sede. Los administradores gestionan médicos y pueden aprobar o rechazar solicitudes de citas pendientes desde Angular. El proyecto integra una API REST compartida por tres componentes principales: el núcleo JavaScript, el panel administrativo Angular y el portal del estudiante React.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently -k -n API,ANGULAR,REACT,VUE -c green,blue,magenta,yellow \"npm --prefix api-mock run api\" \"npm --prefix angular-admin start\" \"npm --prefix react-estudiante run dev\" \"npm --prefix vue-kiosko run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joeeel15/ProyectoIntegral.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Joeeel15/ProyectoIntegral/issues"
+  },
+  "homepage": "https://github.com/Joeeel15/ProyectoIntegral#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.7"
+  }
+}

@@ -80,6 +80,10 @@ export class MediTurnoService {
     return this.cambiarEstadoCita(id, 'rechazada');
   }
 
+  registrarNoAsistio(id: string): Observable<Cita> {
+    return this.cambiarEstadoCita(id, 'no_asistio');
+  }
+
   cancelarCita(id: string): Observable<Cita> {
     return this.cambiarEstadoCita(id, 'cancelada');
   }

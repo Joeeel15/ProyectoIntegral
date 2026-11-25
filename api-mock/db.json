@@ -335,7 +335,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "08:30",
       "horaFin": "09:00",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-05T09:00:00"
     },
     {
@@ -345,7 +345,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "09:00",
       "horaFin": "09:30",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-05T10:00:00"
     },
     {
@@ -355,7 +355,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "14:30",
       "horaFin": "15:00",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-05T11:00:00"
     },
     {
@@ -365,7 +365,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "16:00",
       "horaFin": "16:30",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-06T09:30:00"
     },
     {
@@ -375,7 +375,7 @@
       "fecha": "2026-11-17",
       "horaInicio": "10:00",
       "horaFin": "10:30",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-06T10:00:00"
     },
     {
@@ -385,7 +385,7 @@
       "fecha": "2026-11-17",
       "horaInicio": "09:00",
       "horaFin": "09:30",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-06T11:00:00"
     },
     {
@@ -405,7 +405,7 @@
       "fecha": "2026-11-17",
       "horaInicio": "11:00",
       "horaFin": "11:30",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-07T13:00:00"
     },
     {
@@ -415,7 +415,7 @@
       "fecha": "2026-11-18",
       "horaInicio": "10:00",
       "horaFin": "10:30",
-      "estado": "aprobada",
+      "estado": "no_asistio",
       "creadoEn": "2026-11-07T14:00:00"
     },
     {
@@ -459,14 +459,24 @@
       "creadoEn": "2026-11-25T17:28:11.666Z"
     },
     {
-      "id": "CIT-17956301095904753",
-      "medicoId": "MED-009",
+      "id": "CIT-17956324124336170",
+      "medicoId": "MED-004",
       "estudianteId": "USR-006",
-      "fecha": "2026-11-29",
-      "horaInicio": "09:00",
-      "horaFin": "10:00",
-      "estado": "rechazada",
-      "creadoEn": "2026-11-25T18:08:29.590Z"
+      "fecha": "2026-11-25",
+      "horaInicio": "14:30",
+      "horaFin": "15:30",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-25T18:46:52.433Z"
+    },
+    {
+      "id": "CIT-17956326394594091",
+      "medicoId": "MED-004",
+      "estudianteId": "USR-006",
+      "fecha": "2026-11-25",
+      "horaInicio": "16:00",
+      "horaFin": "16:30",
+      "estado": "pendiente",
+      "creadoEn": "2026-11-25T18:50:39.459Z"
     }
   ]
 }

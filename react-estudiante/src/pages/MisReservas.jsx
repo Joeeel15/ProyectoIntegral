@@ -11,7 +11,8 @@ function MisReservas({
   cargando,
   error,
   actualizar,
-  onCancelarCita
+  onCancelarCita,
+  onMarcarAtendida
 }) {
   const { medicos, cargando: cargandoMedicos, error: errorMedicos, reintentar } = useMedicosCitas();
   const misCitas = citas.filter(
@@ -91,6 +92,7 @@ function MisReservas({
                   cita={cita}
                   medicos={medicos}
                   onCancelarCita={onCancelarCita}
+                  onMarcarAtendida={onMarcarAtendida}
                 />
               ))}
             </div>

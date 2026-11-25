@@ -7,3 +7,5 @@ const servicio = crearServicioCitas(apiAxios);
 export const listarCitas = (estudianteId) => servicio.listar(estudianteId);
 export const crearCita = (formulario, estudianteId) => servicio.crear(formulario, estudianteId);
 export const cancelarCita = (citaId) => servicio.cancelar(citaId);
+
+export const marcarCitaAtendida = (citaId) => servicio.marcarAtendida(citaId);

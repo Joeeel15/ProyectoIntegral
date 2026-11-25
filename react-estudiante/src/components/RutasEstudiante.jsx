@@ -17,7 +17,8 @@ function RutasEstudiante({
   actualizar,
   onGuardar,
   onLogin,
-  onCancelarCita
+  onCancelarCita,
+  onMarcarAtendida
 }) {
   return (
     <Routes>
@@ -38,6 +39,7 @@ function RutasEstudiante({
               error={error}
               actualizar={actualizar}
               onCancelarCita={onCancelarCita}
+              onMarcarAtendida={onMarcarAtendida}
             />
           ) : (
             <Navigate to="/login" replace />

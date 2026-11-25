@@ -125,6 +125,11 @@
                       Rechazar
                     </button>
                   </div>
+                } @else if (puedeMarcarNoAsistio(cita)) {
+                  <button type="button" class="btn btn-sm btn-outline-dark"
+                    [disabled]="actualizandoId !== null" (click)="marcarNoAsistio(cita)">
+                    Marcar no asistió
+                  </button>
                 } @else {
                   <span class="text-muted small">Revisada</span>
                 }
@@ -142,5 +147,5 @@
 }
 
 <p class="small text-muted mt-3">
-  Solo las solicitudes «pendiente» muestran botones de aprobación.
+  Las solicitudes pendientes se pueden aprobar o rechazar. En las 24 horas posteriores al fin de una cita aprobada se puede marcar «No asistió»; después se registra automáticamente.
 </p>

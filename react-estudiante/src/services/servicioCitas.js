@@ -50,6 +50,15 @@ export function crearServicioCitas(cliente) {
       return convertirCitaAPI(respuesta.data);
     },
 
+    async marcarAtendida(citaId) {
+      if (!citaId) throw new Error("No se identificó la cita.");
+      const respuesta = await cliente.patch(
+        `/citas/${encodeURIComponent(citaId)}`,
+        { estado: "atendida" },
+      );
+      return convertirCitaAPI(respuesta.data);
+    },
+
     async cancelar(citaId) {
       if (!citaId) {
         throw new Error("No se identificó la cita a cancelar.");

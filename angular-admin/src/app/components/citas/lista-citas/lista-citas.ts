@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
 import { Cita, EstadoCita } from '../../../models/cita.interface';
@@ -15,9 +15,11 @@ import { MediTurnoService } from '../../../services/mediturno.service';
   imports: [NgClass, EstadoCitaPipe],
   templateUrl: './lista-citas.html',
 })
-export class ListaCitas implements OnInit {
+export class ListaCitas implements OnInit, OnDestroy {
   private readonly servicio = inject(MediTurnoService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private intervaloId: ReturnType<typeof setInterval> | null = null;
+  ahora = Date.now();
 
   citas: Cita[] = [];
   cargando = false;
@@ -48,13 +50,23 @@ export class ListaCitas implements OnInit {
 
   ngOnInit(): void {
     this.cargarCitas();
+    this.intervaloId = setInterval(() => {
+      this.ahora = Date.now();
+      if (!this.cargando && !this.actualizandoId) this.cargarCitas(true);
+    }, 30_000);
   }
 
-  cargarCitas(): void {
+  ngOnDestroy(): void {
+    if (this.intervaloId) clearInterval(this.intervaloId);
+  }
+
+  cargarCitas(silenciosa = false): void {
     if (this.actualizandoId) return;
-    this.cargando = true;
-    this.mensajeError = '';
-    this.mensajeExito = '';
+    if (!silenciosa) {
+      this.cargando = true;
+      this.mensajeError = '';
+      this.mensajeExito = '';
+    }
 
     forkJoin({
       citas: this.servicio.obtenerCitas(),
@@ -101,7 +113,20 @@ export class ListaCitas implements OnInit {
     this.guardarEstado(cita, 'rechazada');
   }
 
-  private guardarEstado(cita: Cita, estado: 'aprobada' | 'rechazada'): void {
+  puedeMarcarNoAsistio(cita: Cita): boolean {
+    if (cita.estado !== 'aprobada') return false;
+    const fin = Date.parse(`${cita.fecha}T${cita.horaFin}:00-05:00`);
+    return Number.isFinite(fin) && this.ahora >= fin &&
+      this.ahora < fin + 24 * 60 * 60 * 1000;
+  }
+
+  marcarNoAsistio(cita: Cita): void {
+    if (!this.puedeMarcarNoAsistio(cita) || this.actualizandoId) return;
+    if (!confirm(`¿Confirmar que no asistieron a la cita ${cita.id}?`)) return;
+    this.guardarEstado(cita, 'no_asistio');
+  }
+
+  private guardarEstado(cita: Cita, estado: 'aprobada' | 'rechazada' | 'no_asistio'): void {
     this.actualizandoId = cita.id;
     this.mensajeError = '';
     this.mensajeExito = '';
@@ -109,13 +134,15 @@ export class ListaCitas implements OnInit {
     const peticion =
       estado === 'aprobada'
         ? this.servicio.aprobarCita(cita.id)
-        : this.servicio.rechazarCita(cita.id);
+        : estado === 'rechazada'
+          ? this.servicio.rechazarCita(cita.id)
+          : this.servicio.registrarNoAsistio(cita.id);
 
     peticion.subscribe({
       next: (actualizada) => {
         // Actualización en memoria, sin necesidad de recargar toda la página.
         this.citas = this.citas.map((c) => (c.id === cita.id ? actualizada : c));
-        this.mensajeExito = `La cita ${cita.id} fue ${estado === 'aprobada' ? 'aprobada' : 'rechazada'} correctamente.`;
+        this.mensajeExito = `La cita ${cita.id} cambió a ${estado === 'no_asistio' ? 'No asistió' : estado} correctamente.`;
         this.actualizandoId = null;
         this.cdr.markForCheck();
       },
@@ -123,7 +150,7 @@ export class ListaCitas implements OnInit {
         this.mensajeError =
           typeof error.error?.error === 'string'
             ? error.error.error
-            : `No se pudo ${estado === 'aprobada' ? 'aprobar' : 'rechazar'} la cita. Intenta actualizar la lista.`;
+            : `No se pudo actualizar el estado de la cita. Intenta actualizar la lista.`;
         this.actualizandoId = null;
         this.cdr.markForCheck();
       },

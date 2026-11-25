@@ -1,7 +1,8 @@
 import BadgeEstadoCita from "./BadgeEstadoCita";
 import { puedeCancelarCita } from "../utils/reglasCitas";
+import { puedeMarcarAtendida } from "../utils/asistenciaCitas";
 
-function TarjetaCita({ cita, medicos = [], onCancelarCita }) {
+function TarjetaCita({ cita, medicos = [], onCancelarCita, onMarcarAtendida }) {
   const medico = medicos.find((item) => item.id === cita.medicoId);
   return (
     <div className="col-12 col-md-6">
@@ -27,6 +28,12 @@ function TarjetaCita({ cita, medicos = [], onCancelarCita }) {
             <div className="alert alert-secondary py-2 small">
               Esta cita fue cancelada. El horario vuelve a estar disponible.
             </div>
+          )}
+          {puedeMarcarAtendida(cita) && onMarcarAtendida && (
+            <button type="button" className="btn btn-success btn-sm me-2"
+              onClick={() => onMarcarAtendida(cita.id)}>
+              Marcar como atendida
+            </button>
           )}
           {puedeCancelarCita(cita) && (
             <button

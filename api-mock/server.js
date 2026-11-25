@@ -2,10 +2,28 @@ const jsonServer = require("json-server");
 
 const server = jsonServer.create();
 const path = require("path");
+const { puedeCerrarAsistencia, debeMarcarNoAsistio } = require("./reglasAsistencia");
 const router = jsonServer.router(path.join(__dirname, "db.json"));
 
 server.use(jsonServer.defaults());
 server.use(jsonServer.bodyParser);
+
+// Regularizar citas expiradas incluso si ningún frontend está abierto.
+// También se ejecuta al iniciar la API y cuando se vuelve a consultar tras un apagado.
+function expirarAsistenciasVencidas() {
+  const vencidas = router.db.get('citas').value().filter((cita) => debeMarcarNoAsistio(cita));
+  for (const cita of vencidas) {
+    router.db.get('citas').find({ id: cita.id }).assign({ estado: 'no_asistio' }).write();
+  }
+  if (vencidas.length) console.log(`Asistencias vencidas: ${vencidas.length} cita(s) marcadas no_asistio`);
+}
+
+server.use((req, res, next) => {
+  if (req.path === '/citas' || req.path.startsWith('/citas/')) {
+    expirarAsistenciasVencidas();
+  }
+  next();
+});
 
 // ==========================================
 // FUNCIONES AUXILIARES
@@ -285,6 +303,14 @@ server.use((req, res, next) => {
   }
 
   if (esEdicion && estado !== citaActual.estado) {
+    // Solo se registra asistencia/no asistencia durante las 24 h posteriores
+    // a la hora de finalización, y únicamente en citas aprobadas.
+    if (["atendida", "no_asistio"].includes(estado) &&
+        !puedeCerrarAsistencia(citaActual)) {
+      return res.status(409).json({
+        error: "Solo se puede cerrar la asistencia durante las 24 horas posteriores al fin de una cita aprobada.",
+      });
+    }
     const transiciones = {
       pendiente: ["aprobada", "rechazada", "cancelada"],
       aprobada: ["atendida", "cancelada", "no_asistio"],
@@ -393,6 +419,11 @@ server.use((req, res, next) => {
 // ==========================================
 
 server.use(router);
+
+// En funcionamiento revisa vencimientos cada 30 s; se pone al día al reiniciar.
+expirarAsistenciasVencidas();
+const intervaloAsistencia = setInterval(expirarAsistenciasVencidas, 30_000);
+intervaloAsistencia.unref?.();
 
 const PORT = 3000;
 

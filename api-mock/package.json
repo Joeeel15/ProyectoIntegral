@@ -5,7 +5,8 @@
   "description": "API REST simulada para MediTurno",
   "main": "server.js",
   "scripts": {
-    "api": "node server.js"
+    "api": "node server.js",
+    "test": "node --test asistencia.test.js"
   },
   "dependencies": {
     "json-server": "0.17.4"

@@ -6,6 +6,7 @@ import RutasEstudiante from "./components/RutasEstudiante";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useReservas } from "./hooks/useReservas";
+import { puedeMarcarAtendida } from "./utils/asistenciaCitas";
 
 function Aplicacion() {
   const { usuario, iniciarSesion, cerrarSesion, autenticado } = useAuth();
@@ -16,6 +17,7 @@ function Aplicacion() {
     error,
     crear,
     cancelar,
+    marcarAtendida,
     actualizar
   } = useReservas(usuario?.id);
 
@@ -81,6 +83,18 @@ function Aplicacion() {
     }
   };
 
+  const manejarMarcarAtendida = async (citaId) => {
+    const cita = citas.find((item) => item.id === citaId);
+    if (!usuario || !cita || cita.estudianteId !== usuario.id ||
+        !puedeMarcarAtendida(cita)) return;
+    if (!window.confirm("¿Confirmas que asististe a esta cita médica?")) return;
+    try {
+      await marcarAtendida(citaId);
+    } catch {
+      // El hook mostrará el error devuelto por el servidor.
+    }
+  };
+
   return (
     <>
       <Navbar usuario={usuario} onCerrarSesion={manejarCerrarSesion} />
@@ -95,6 +109,7 @@ function Aplicacion() {
         onGuardar={manejarNuevaCita}
         onLogin={manejarLogin}
         onCancelarCita={manejarCancelarCita}
+        onMarcarAtendida={manejarMarcarAtendida}
       />
     </>
   );
