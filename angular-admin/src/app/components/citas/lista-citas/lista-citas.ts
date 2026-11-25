@@ -135,7 +135,6 @@ export class ListaCitas implements OnInit {
       case 'pendiente':
         return 'text-bg-warning';
       case 'aprobada':
-      case 'programada':
         return 'text-bg-primary';
       case 'atendida':
         return 'text-bg-success';

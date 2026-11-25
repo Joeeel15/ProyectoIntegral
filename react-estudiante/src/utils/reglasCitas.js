@@ -17,7 +17,7 @@ export function existeCruceCita(nuevaCita, citas) {
 }
 
 // El estudiante puede cancelar solicitudes pendientes o citas confirmadas.
-const ESTADOS_CANCELABLES = new Set(["pendiente", "aprobada", "programada"]);
+const ESTADOS_CANCELABLES = new Set(["pendiente", "aprobada"]);
 
 export function puedeCancelarCita(cita) {
   return ESTADOS_CANCELABLES.has(cita.estado);

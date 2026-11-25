@@ -31,8 +31,7 @@ export class Dashboard implements OnInit {
   }
 
   get aprobadas(): number {
-    // Las citas "programada" son registros anteriores al flujo de aprobación.
-    return this.citas.filter(c => ['aprobada', 'programada'].includes(c.estado)).length;
+    return this.citas.filter(c => c.estado === 'aprobada').length;
   }
 
   get atendidas(): number {

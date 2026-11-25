@@ -20,10 +20,6 @@ test('una cita aprobada bloquea otra cita del mismo médico', () => {
   ]), true);
 });
 
-test('las citas programadas anteriores siguen bloqueando el horario', () => {
-  assert.equal(existeCruceCita(cita(), [cita({ estado: 'programada' })]), true);
-});
-
 test('una cita rechazada libera el horario', () => {
   assert.equal(citaOcupaHorario(cita({ estado: 'rechazada' })), false);
   assert.equal(existeCruceCita(cita(), [cita({ estado: 'rechazada' })]), false);
@@ -50,10 +46,14 @@ test('se comprueban también las citas añadidas durante la sesión', () => {
   assert.equal(existeCruceCita(cita({ id: 'CIT-1003' }), citas), true);
 });
 
-test('se pueden cancelar solicitudes pendientes y citas aprobadas o programadas', () => {
-  for (const estado of ['pendiente', 'aprobada', 'programada']) {
+test('se pueden cancelar solicitudes pendientes y citas aprobadas', () => {
+  for (const estado of ['pendiente', 'aprobada']) {
     assert.equal(puedeCancelarCita(cita({ estado })), true);
   }
+});
+
+test('un estado no reconocido no permite cancelar la cita', () => {
+  assert.equal(puedeCancelarCita(cita({ estado: 'desconocido' })), false);
 });
 
 test('no se pueden cancelar citas finalizadas', () => {

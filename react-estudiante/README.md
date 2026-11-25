@@ -66,7 +66,7 @@ en las tarjetas del historial con `useMedicosCitas`, evitando usar la copia loca
 ## Reglas de citas y persistencia
 
 Las solicitudes nuevas se crean como **`pendiente`** y pueden aprobarse o rechazarse
-en Angular. Los estados `programada` siguen admitiéndose para datos antiguos.
+en Angular. Las citas confirmadas utilizan exclusivamente el estado `aprobada`.
 El formulario reutiliza `core-js/validadores.js` y la clase `Cita` para
 verificar fechas, horarios de los médicos y cruces; los errores se muestran junto
 a los campos. El servidor también comprueba los cruces antes de registrar la cita.

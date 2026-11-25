@@ -25,7 +25,7 @@
   <div class="col-sm-4">
     <div class="card border-0 shadow-sm">
       <div class="card-body">
-        <div class="text-muted small">Aprobadas (flujo nuevo)</div>
+        <div class="text-muted small">Aprobadas</div>
         <div class="h3 fw-bold text-primary mb-0">{{ aprobadas }}</div>
       </div>
     </div>
@@ -61,7 +61,6 @@
           <option value="todos">Todos los estados</option>
           <option value="pendiente">Pendiente de aprobación</option>
           <option value="aprobada">Aprobada</option>
-          <option value="programada">Programada (a)</option>
           <option value="atendida">Atendida</option>
           <option value="rechazada">Rechazada</option>
           <option value="cancelada">Cancelada</option>
@@ -143,6 +142,5 @@
 }
 
 <p class="small text-muted mt-3">
-  Los registros anteriores con estado «programada» se conservan por compatibilidad; solo las
-  solicitudes «pendiente» muestran botones de aprobación.
+  Solo las solicitudes «pendiente» muestran botones de aprobación.
 </p>

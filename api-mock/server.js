@@ -250,7 +250,6 @@ server.use((req, res, next) => {
     "pendiente",
     "aprobada",
     "rechazada",
-    "programada",
     "atendida",
     "cancelada",
     "no_asistio",
@@ -289,7 +288,6 @@ server.use((req, res, next) => {
     const transiciones = {
       pendiente: ["aprobada", "rechazada", "cancelada"],
       aprobada: ["atendida", "cancelada", "no_asistio"],
-      programada: ["atendida", "cancelada", "no_asistio"],
       rechazada: [],
       atendida: [],
       cancelada: [],

@@ -113,7 +113,7 @@ export class Cita {
     fecha,
     horaInicio,
     horaFin,
-    estado = "programada",
+    estado = "pendiente",
     creadoEn = new Date().toISOString(),
   ) {
     this._id = id;

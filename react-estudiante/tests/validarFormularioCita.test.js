@@ -58,9 +58,8 @@ test('rechazadas y canceladas no bloquean el formulario', () => {
   assert.deepEqual(validar({}, [hacerCita('cancelada')]), {});
 });
 
-test('citas aprobadas y antiguas programadas bloquean el formulario', () => {
+test('las citas aprobadas bloquean el formulario', () => {
   assert.match(validar({}, [hacerCita('aprobada')]).horaInicio, /ya tiene una cita/);
-  assert.match(validar({}, [hacerCita('programada')]).horaInicio, /ya tiene una cita/);
 });
 
 test('horarios contiguos se permiten', () => {

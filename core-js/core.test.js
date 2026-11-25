@@ -46,7 +46,7 @@ describe("Pruebas del Sistema MediTurno", () => {
     );
     assert.strictEqual(cita.medicoId, "MED-001");
     assert.strictEqual(cita.estudianteId, "USR-002");
-    assert.strictEqual(cita.estado, "programada"); // Verifica el valor por defecto
+    assert.strictEqual(cita.estado, "pendiente"); // Una solicitud nueva espera aprobación
   });
 
   test("3. Usuario: Identifica al administrador y verifica su contraseña", () => {
@@ -177,11 +177,11 @@ describe("Pruebas del Sistema MediTurno", () => {
   test("11. contarCitasPorEstado: Agrupa y cuenta correctamente por estado", () => {
     const citas = [
       { estado: "atendida" },
-      { estado: "programada" },
+      { estado: "aprobada" },
       { estado: "atendida" },
     ];
     const resultado = contarCitasPorEstado(citas);
-    assert.deepEqual(resultado, { atendida: 2, programada: 1 });
+    assert.deepEqual(resultado, { atendida: 2, aprobada: 1 });
   });
 
   test("12. calcularOcupacionPorMedico: Suma correctamente las citas asignadas a cada médico", () => {

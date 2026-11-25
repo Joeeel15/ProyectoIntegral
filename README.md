@@ -96,5 +96,5 @@ node --test
 ## Notas de desarrollo
 
 - La API mock aún no implementa autenticación ni autorización; utilízala únicamente con credenciales ficticias y en un entorno local.
-- Los estados del flujo de citas son `pendiente`, `aprobada`, `rechazada`, `atendida` y `cancelada`, conservando `programada` y `no_asistio` por compatibilidad con datos anteriores.
+- Los estados del flujo de citas son `pendiente`, `aprobada`, `rechazada`, `atendida`, `cancelada` y `no_asistio`. Una cita confirmada usa `aprobada`.
 - Se ha utilizado asistencia de IA para revisar y adaptar partes de la implementación; el equipo debe comprender y poder explicar cada cambio, conforme al enunciado del curso.

@@ -4,7 +4,7 @@
 
 export function contarCitasPorEstado(citas) {
   return citas.reduce((acumulador, cita) => {
-    const estado = cita.estado || "programada";
+    const estado = cita.estado || "pendiente";
 
     acumulador[estado] = (acumulador[estado] || 0) + 1;
 

@@ -209,6 +209,22 @@
         "horaFin": "19:00"
       },
       "estado": "activo"
+    },
+    {
+      "id": "MED-009",
+      "nombre": "Dra. Soriano",
+      "especialidad": "Pediatria",
+      "consultorio": "211",
+      "sede": "Lima Centro",
+      "diasDisponibles": [
+        "sabado",
+        "domingo"
+      ],
+      "horarioAtencion": {
+        "horaInicio": "09:00",
+        "horaFin": "14:00"
+      },
+      "estado": "activo"
     }
   ],
   "citas": [
@@ -319,7 +335,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "08:30",
       "horaFin": "09:00",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-05T09:00:00"
     },
     {
@@ -329,7 +345,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "09:00",
       "horaFin": "09:30",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-05T10:00:00"
     },
     {
@@ -339,7 +355,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "14:30",
       "horaFin": "15:00",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-05T11:00:00"
     },
     {
@@ -349,7 +365,7 @@
       "fecha": "2026-11-16",
       "horaInicio": "16:00",
       "horaFin": "16:30",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-06T09:30:00"
     },
     {
@@ -359,7 +375,7 @@
       "fecha": "2026-11-17",
       "horaInicio": "10:00",
       "horaFin": "10:30",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-06T10:00:00"
     },
     {
@@ -369,7 +385,7 @@
       "fecha": "2026-11-17",
       "horaInicio": "09:00",
       "horaFin": "09:30",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-06T11:00:00"
     },
     {
@@ -389,7 +405,7 @@
       "fecha": "2026-11-17",
       "horaInicio": "11:00",
       "horaFin": "11:30",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-07T13:00:00"
     },
     {
@@ -399,7 +415,7 @@
       "fecha": "2026-11-18",
       "horaInicio": "10:00",
       "horaFin": "10:30",
-      "estado": "programada",
+      "estado": "aprobada",
       "creadoEn": "2026-11-07T14:00:00"
     },
     {
@@ -421,6 +437,36 @@
       "horaFin": "12:00",
       "estado": "cancelada",
       "creadoEn": "2026-11-21T05:46:21.745Z"
+    },
+    {
+      "id": "CIT-17956274142432837",
+      "medicoId": "MED-006",
+      "estudianteId": "USR-004",
+      "fecha": "2026-11-30",
+      "horaInicio": "10:30",
+      "horaFin": "12:00",
+      "estado": "rechazada",
+      "creadoEn": "2026-11-25T17:23:34.243Z"
+    },
+    {
+      "id": "CIT-17956276916653940",
+      "medicoId": "MED-002",
+      "estudianteId": "USR-004",
+      "fecha": "2026-11-26",
+      "horaInicio": "13:00",
+      "horaFin": "14:00",
+      "estado": "aprobada",
+      "creadoEn": "2026-11-25T17:28:11.666Z"
+    },
+    {
+      "id": "CIT-17956301095904753",
+      "medicoId": "MED-009",
+      "estudianteId": "USR-006",
+      "fecha": "2026-11-29",
+      "horaInicio": "09:00",
+      "horaFin": "10:00",
+      "estado": "rechazada",
+      "creadoEn": "2026-11-25T18:08:29.590Z"
     }
   ]
 }

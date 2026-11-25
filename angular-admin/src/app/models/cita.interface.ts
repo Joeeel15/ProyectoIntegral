@@ -1,10 +1,8 @@
-// "programada" se conserva para leer las citas existentes en db.json.
-// Las nuevas solicitudes usarán "pendiente" y el admin podrá aprobarlas o rechazarlas.
+// Flujo: pendiente → aprobada/rechazada; las citas canceladas conservan su historial.
 export type EstadoCita =
   | 'pendiente'
   | 'aprobada'
   | 'rechazada'
-  | 'programada'
   | 'atendida'
   | 'cancelada'
   | 'no_asistio';

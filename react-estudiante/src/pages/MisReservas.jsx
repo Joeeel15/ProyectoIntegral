@@ -3,7 +3,7 @@ import TarjetaCita from "../components/TarjetaCita";
 import ResumenCitas from "../components/ResumenCitas";
 import { useMedicosCitas } from "../hooks/useMedicosCitas";
 
-const ESTADOS_CONFIRMADOS = new Set(["aprobada", "programada"]);
+const ESTADOS_CONFIRMADOS = new Set(["aprobada"]);
 
 function MisReservas({
   usuario,

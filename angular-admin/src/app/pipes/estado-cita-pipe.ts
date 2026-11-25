@@ -12,7 +12,6 @@ export class EstadoCitaPipe implements PipeTransform {
       pendiente: 'Pendiente de aprobación',
       aprobada: 'Aprobada',
       rechazada: 'Rechazada',
-      programada: 'Programada (anterior)',
       atendida: 'Atendida',
       cancelada: 'Cancelada',
       no_asistio: 'No asistió'

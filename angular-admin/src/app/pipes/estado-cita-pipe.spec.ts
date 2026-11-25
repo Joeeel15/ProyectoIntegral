@@ -9,8 +9,7 @@ describe('EstadoCitaPipe', () => {
     expect(pipe.transform('rechazada')).toBe('Rechazada');
   });
 
-  it('conserva la lectura de los estados antiguos', () => {
-    expect(pipe.transform('programada')).toBe('Programada (anterior)');
+  it('muestra el estado no asistió', () => {
     expect(pipe.transform('no_asistio')).toBe('No asistió');
   });
 });
