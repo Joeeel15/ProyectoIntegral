@@ -100,7 +100,7 @@ export default async function DetalleMedico({ params }) {
         <div className="datos-medico">
           <div className="titulo-bloque">
             <h2>Información del médico</h2>
-            <span className="estado activo">
+            <span className={`estado ${medico.estado === 'activo' ? 'activo' : 'inactivo'}`}>
               {medico.estado === 'activo' ? 'Disponible' : 'No disponible'}
             </span>
           </div>

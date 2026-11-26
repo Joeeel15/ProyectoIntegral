@@ -52,7 +52,16 @@ ProyectoIntegral/
 
 ## Cómo ejecutar el proyecto
 
-Cada aplicación se ejecuta en una terminal independiente. Es necesario iniciar primero la API para que los frontends puedan consultar y modificar los datos.
+**Inicio conjunto recomendado (5 servicios):** instala primero las dependencias de cada módulo (`npm install` o `npm ci`, según corresponda). Después, desde la raíz del repositorio, ejecuta:
+
+```bash
+npm ci
+npm run dev
+```
+
+`concurrently` iniciará la API (3000), Angular (4200), React (5173), Vue (5174) y Next.js (3001) en la misma terminal. Usa `Ctrl + C` para detenerlos todos. Si es la primera instalación, ejecuta `npm ci` dentro de `api-mock`, `angular-admin`, `react-estudiante`, `vue-kiosko` y `next-publico` antes del inicio conjunto.
+
+**Inicio por separado:** también puedes iniciar cada módulo individualmente mediante los pasos siguientes. Al iniciar uno a uno, ejecuta primero la API para que los frontends puedan consultar los datos.
 
 ### 1. API compartida (puerto 3000)
 
@@ -131,8 +140,8 @@ npm run build
 
 ```bash
 cd next-publico
-npm install
-npm run dev -- --port 3001
+npm ci
+npm run dev
 ```
 
 Portal disponible en:
@@ -154,7 +163,8 @@ Rutas principales:
 | Ruta | Función |
 |---|---|
 | `/` | Página principal y catálogo de médicos |
-| `/medicos/[id]` | Detalle dinámico de un médico |
+| `/medicos` | Catálogo público SSR (misma vista que `/`) |
+| `/medicos/[id]` | Detalle dinámico de un médico con SSR |
 | `/consultar-cita` | Formulario para consultar una cita |
 | `/cita/[codigo]` | Resultado de la consulta pública de una cita |
 | `/cita` | Redirección al detalle de la cita consultada |
@@ -168,6 +178,8 @@ Para compilar el proyecto:
 cd next-publico
 npm run build
 ```
+
+Para demostrar el SSR en la sustentación, abre `http://localhost:3001/medicos/MED-001` y usa **Ver código fuente** (`Ctrl + U`): el nombre y la especialidad del médico deben estar en el HTML recibido del servidor. También puedes comprobar `/medicos` y `/cita/CIT-0001`, y visitar una cita inexistente para verificar la página 404.
 
 ## Comparación de frameworks
 
@@ -267,4 +279,4 @@ Las operaciones POST, PUT y DELETE modifican los datos de `api-mock/db.json`.
 - Los estados del flujo de citas son `pendiente`, `aprobada`, `rechazada`, `atendida`, `cancelada` y `no_asistio`.
 - Una cita confirmada utiliza el estado `aprobada`.
 - Todos los frontends utilizan la misma API REST para consultar la información.
-- Se ha utilizado asistencia de IA para revisar y adaptar partes de la implementación. El equipo debe comprender y poder explicar cada cambio, conforme al enunciado del curso.
+- Se ha utilizado asistencia de IA para revisar y adaptar partes de la implementación. El equipo es capaz de comprender y poder explicar cada cambio.

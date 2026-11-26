@@ -473,11 +473,6 @@ body {
   color: #991b1b;
 }
 
-.estado-programada {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
 @media (max-width: 600px) {
   .consulta-tarjeta {
     padding: 23px;
